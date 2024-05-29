@@ -11,7 +11,10 @@ import org.m_tag.jfind.books.Query;
 class FindCalibreTest {
   @Test
   void queryAll() throws ClassNotFoundException, IOException, SQLException {
-    Book[] expected = {new Book("John Schember", "Quick Start Guide")};
+    Book[] expected = {
+        new Book("John Schember", "Quick Start Guide"),
+        new Book("夏目 漱石", "吾輩は猫である"),
+        };
     Query query = new Query();
     try (FindCalibre calibre = new FindCalibre("src/test/resources/metadata.db", query)) {
       final Book[] value = calibre.stream().toArray(Book[]::new);
