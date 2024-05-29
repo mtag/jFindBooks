@@ -1,4 +1,4 @@
-package org.m_tag.jfind.books.sqlite.calibre;
+package org.m_tag.jfind.books.sqlite;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -6,7 +6,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import org.m_tag.jfind.books.Book;
 import org.m_tag.jfind.books.Query;
-import org.m_tag.jfind.books.sqlite.FindSqlite;
 
 /**
  * Find book from calibre db.
@@ -15,7 +14,7 @@ public class FindCalibre extends FindSqlite {
 
   public FindCalibre(final String file, final Query query)
       throws ClassNotFoundException, SQLException {
-    super("jdbc:sqlite:" + file, query);
+    super(file, query);
   }
 
 

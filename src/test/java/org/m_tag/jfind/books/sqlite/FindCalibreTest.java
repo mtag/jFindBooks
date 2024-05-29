@@ -1,4 +1,4 @@
-package org.m_tag.jfind.books.sqlite.calibre;
+package org.m_tag.jfind.books.sqlite;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import org.junit.jupiter.api.Test;
 import org.m_tag.jfind.books.Book;
 import org.m_tag.jfind.books.Query;
+import org.m_tag.jfind.books.sqlite.FindCalibre;
 
 class FindCalibreTest {
   @Test
@@ -57,8 +58,23 @@ class FindCalibreTest {
   void queryByTitleAndAuthor() throws ClassNotFoundException, IOException, SQLException {
     Book[] expected = {new Book("John Schember", "Quick Start Guide")};
     Query query = new Query();
-    query.setAuthor("John Schember");
-    query.setTitle("Quick Start Guide");
+    query.setAuthor("John");
+    query.setTitle("Guide");
+    try (FindCalibre calibre = new FindCalibre("src/test/resources/metadata.db", query)) {
+      final Book[] value = calibre.stream().toArray(Book[]::new);
+      assertEquals(expected.length, value.length);
+      for (int i = 0; i < expected.length; i++) {
+        assertEquals(expected[i], value[i]);
+      }
+    }
+  }
+
+  @Test
+  void queryByJapanese() throws ClassNotFoundException, IOException, SQLException {
+    Book[] expected = {new Book("夏目 漱石", "吾輩は猫である")};
+    Query query = new Query();
+    query.setAuthor("夏目");
+    query.setTitle("猫");
     try (FindCalibre calibre = new FindCalibre("src/test/resources/metadata.db", query)) {
       final Book[] value = calibre.stream().toArray(Book[]::new);
       assertEquals(expected.length, value.length);

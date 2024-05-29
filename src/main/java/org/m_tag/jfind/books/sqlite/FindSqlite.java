@@ -27,11 +27,12 @@ public abstract class FindSqlite implements Iterator<Book>, Closeable {
 
   private final PreparedStatement statement;
 
-  protected FindSqlite(final String uri, final Query query)
+  protected FindSqlite(final String file, final Query query)
       throws ClassNotFoundException, SQLException {
     super();
     Class.forName("org.sqlite.JDBC");
-    this.connection = DriverManager.getConnection(uri);
+    final String url = "jdbc:sqlite:" + file;
+    this.connection = DriverManager.getConnection(url);
     this.statement = prepare(connection, query);
     this.resultSet = statement.executeQuery();
     this.book = null;
