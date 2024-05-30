@@ -13,7 +13,6 @@ import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
-import org.m_tag.jfind.ReadingException;
 import org.m_tag.jfind.books.Book;
 import org.m_tag.jfind.books.Query;
 
@@ -78,7 +77,7 @@ public abstract class FindSqlite implements Iterator<Book>, Closeable {
       this.book = readRecord(resultSet);
       return true;
     } catch (SQLException ex) {
-      throw new ReadingException("Error in reading record", ex);
+      throw new SQLReadingException("Error in reading record", ex);
     }
   }
 

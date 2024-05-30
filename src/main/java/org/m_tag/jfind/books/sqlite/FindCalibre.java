@@ -53,5 +53,4 @@ public class FindCalibre extends FindSqlite {
     book.setTitle(rs.getString("title"));
     return book;
   }
-
 }
