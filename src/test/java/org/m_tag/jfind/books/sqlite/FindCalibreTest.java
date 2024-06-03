@@ -7,7 +7,6 @@ import java.sql.SQLException;
 import org.junit.jupiter.api.Test;
 import org.m_tag.jfind.books.Book;
 import org.m_tag.jfind.books.Query;
-import org.m_tag.jfind.books.sqlite.FindCalibre;
 
 class FindCalibreTest {
   @Test
