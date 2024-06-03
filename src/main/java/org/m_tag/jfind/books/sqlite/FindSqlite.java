@@ -77,7 +77,7 @@ public abstract class FindSqlite implements Iterator<Book>, Closeable {
       this.book = readRecord(resultSet);
       return true;
     } catch (SQLException ex) {
-      throw new SQLReadingException("Error in reading record", ex);
+      throw new QueryException("Error in reading record", ex);
     }
   }
 

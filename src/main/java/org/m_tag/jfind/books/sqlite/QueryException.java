@@ -6,7 +6,7 @@ import org.m_tag.jfind.ReadingException;
 /**
  * Errors on query.
  */
-public class SQLReadingException extends ReadingException {
+public class QueryException extends ReadingException {
 
   /**
    * generated serial.
@@ -19,7 +19,7 @@ public class SQLReadingException extends ReadingException {
    * @param message message
    * @param cause errors on query.
    */
-  public SQLReadingException(String message, SQLException cause) {
+  public QueryException(String message, SQLException cause) {
     super(message, cause);
   }
 }
