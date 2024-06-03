@@ -14,12 +14,13 @@ import java.util.Spliterators;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 import org.m_tag.jfind.books.Book;
+import org.m_tag.jfind.books.BookIterator;
 import org.m_tag.jfind.books.Query;
 
 /**
  * Find books from sqlite3 db.
  */
-public abstract class FindSqlite implements Iterator<Book>, Closeable {
+public abstract class SqliteAbstractIterator implements BookIterator {
   private Book book = null;
   private final Connection connection;
   private final ResultSet resultSet;
@@ -34,7 +35,7 @@ public abstract class FindSqlite implements Iterator<Book>, Closeable {
    * @throws ClassNotFoundException Cannot load JDBC driver
    * @throws SQLException query error
    */
-  protected FindSqlite(final String file, final Query query)
+  protected SqliteAbstractIterator(final String file, final Query query)
       throws ClassNotFoundException, SQLException {
     super();
     Class.forName("org.sqlite.JDBC");
@@ -99,7 +100,6 @@ public abstract class FindSqlite implements Iterator<Book>, Closeable {
     throw new NoSuchElementException();
   }
 
-  protected abstract Book readRecord(final ResultSet rs) throws SQLException;
 
   /**
    * create stream for listed files.
@@ -110,5 +110,12 @@ public abstract class FindSqlite implements Iterator<Book>, Closeable {
     final Spliterator<Book> spliterator =
         Spliterators.spliteratorUnknownSize(this, Spliterator.ORDERED | Spliterator.NONNULL);
     return StreamSupport.stream(spliterator, false);
+  }
+
+  protected Book readRecord(final ResultSet rs) throws SQLException {
+    final Book book = new SqliteBook();
+    book.setAuthor(rs.getString("author")); //$NON-NLS-1$
+    book.setTitle(rs.getString("title")); //$NON-NLS-1$
+    return book;
   }
 }

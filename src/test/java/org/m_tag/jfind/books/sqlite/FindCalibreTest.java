@@ -12,11 +12,11 @@ class FindCalibreTest {
   @Test
   void queryAll() throws ClassNotFoundException, IOException, SQLException {
     Book[] expected = {
-        new Book("John Schember", "Quick Start Guide"),
-        new Book("夏目 漱石", "吾輩は猫である"),
+        new SqliteBook("John Schember", "Quick Start Guide"),
+        new SqliteBook("夏目 漱石", "吾輩は猫である"),
         };
     Query query = new Query();
-    try (FindCalibre calibre = new FindCalibre(FindCalibre.getDefaultMetadata(), query)) {
+    try (SqliteAbstractIterator calibre = new CalibreIterator(CalibreIterator.getDefaultMetadata(), query)) {
       final Book[] value = calibre.stream().toArray(Book[]::new);
       assertEquals(expected.length, value.length);
       for (int i = 0; i < expected.length; i++) {
@@ -27,10 +27,10 @@ class FindCalibreTest {
 
   @Test
   void queryByAuthor() throws ClassNotFoundException, IOException, SQLException {
-    Book[] expected = {new Book("John Schember", "Quick Start Guide")};
+    Book[] expected = {new SqliteBook("John Schember", "Quick Start Guide")};
     Query query = new Query();
     query.setAuthor("John Schember");
-    try (FindCalibre calibre = new FindCalibre(query)) {
+    try (SqliteAbstractIterator calibre = new CalibreIterator(query)) {
       final Book[] value = calibre.stream().toArray(Book[]::new);
       assertEquals(expected.length, value.length);
       for (int i = 0; i < expected.length; i++) {
@@ -41,10 +41,10 @@ class FindCalibreTest {
   
   @Test
   void queryByTitle() throws ClassNotFoundException, IOException, SQLException {
-    Book[] expected = {new Book("John Schember", "Quick Start Guide")};
+    Book[] expected = {new SqliteBook("John Schember", "Quick Start Guide")};
     Query query = new Query();
     query.setTitle("Quick Start Guide");
-    try (FindCalibre calibre = new FindCalibre(FindCalibre.getDefaultMetadata(), query)) {
+    try (SqliteAbstractIterator calibre = new CalibreIterator(CalibreIterator.getDefaultMetadata(), query)) {
       final Book[] value = calibre.stream().toArray(Book[]::new);
       assertEquals(expected.length, value.length);
       for (int i = 0; i < expected.length; i++) {
@@ -55,11 +55,11 @@ class FindCalibreTest {
   
   @Test
   void queryByTitleAndAuthor() throws ClassNotFoundException, IOException, SQLException {
-    Book[] expected = {new Book("John Schember", "Quick Start Guide")};
+    Book[] expected = {new SqliteBook("John Schember", "Quick Start Guide")};
     Query query = new Query();
     query.setAuthor("John");
     query.setTitle("Guide");
-    try (FindCalibre calibre = new FindCalibre(FindCalibre.getDefaultMetadata(), query)) {
+    try (SqliteAbstractIterator calibre = new CalibreIterator(CalibreIterator.getDefaultMetadata(), query)) {
       final Book[] value = calibre.stream().toArray(Book[]::new);
       assertEquals(expected.length, value.length);
       for (int i = 0; i < expected.length; i++) {
@@ -71,11 +71,11 @@ class FindCalibreTest {
 
   @Test
   void queryByJapanese() throws ClassNotFoundException, IOException, SQLException {
-    Book[] expected = {new Book("夏目 漱石", "吾輩は猫である")};
+    Book[] expected = {new SqliteBook("夏目 漱石", "吾輩は猫である")};
     Query query = new Query();
     query.setAuthor("夏目");
     query.setTitle("猫");
-    try (FindCalibre calibre = new FindCalibre(FindCalibre.getDefaultMetadata(), query)) {
+    try (SqliteAbstractIterator calibre = new CalibreIterator(CalibreIterator.getDefaultMetadata(), query)) {
       final Book[] value = calibre.stream().toArray(Book[]::new);
       assertEquals(expected.length, value.length);
       for (int i = 0; i < expected.length; i++) {

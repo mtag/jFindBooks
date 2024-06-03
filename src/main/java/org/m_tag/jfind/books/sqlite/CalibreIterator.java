@@ -2,15 +2,13 @@ package org.m_tag.jfind.books.sqlite;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import org.m_tag.jfind.books.Book;
 import org.m_tag.jfind.books.Query;
 
 /**
  * Find book from calibre db.
  */
-public class FindCalibre extends FindSqlite {
+public class CalibreIterator extends SqliteAbstractIterator {
   public static final String CALIBRE_METADATA = "CALIBRE_METADATA";
   /**
    * default path of metadata.db.
@@ -32,7 +30,7 @@ public class FindCalibre extends FindSqlite {
    * @param defaultMetadata path of metadata.db
    */
   public static void setDefaultMetadata(String defaultMetadata) {
-    FindCalibre.defaultMetadata = defaultMetadata;
+    CalibreIterator.defaultMetadata = defaultMetadata;
   }
 
   /**
@@ -42,7 +40,7 @@ public class FindCalibre extends FindSqlite {
    * @throws ClassNotFoundException Cannot load JDBC driver
    * @throws SQLException query error
    */
-  public FindCalibre(final Query query) throws ClassNotFoundException, SQLException {
+  public CalibreIterator(final Query query) throws ClassNotFoundException, SQLException {
     this(defaultMetadata, query);
   }
 
@@ -54,7 +52,7 @@ public class FindCalibre extends FindSqlite {
    * @throws ClassNotFoundException Cannot load JDBC driver
    * @throws SQLException query error
    */
-  public FindCalibre(final String file, final Query query)
+  public CalibreIterator(final String file, final Query query)
       throws ClassNotFoundException, SQLException {
     super(file, query);
   }
@@ -87,13 +85,5 @@ public class FindCalibre extends FindSqlite {
       prepared.setString(title, '%' + query.getTitle() + '%');
     }
     return prepared;
-  }
-
-  @Override
-  protected Book readRecord(final ResultSet rs) throws SQLException {
-    final Book book = new Book();
-    book.setAuthor(rs.getString("author")); //$NON-NLS-1$
-    book.setTitle(rs.getString("title")); //$NON-NLS-1$
-    return book;
   }
 }
