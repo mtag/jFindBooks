@@ -26,6 +26,14 @@ public abstract class FindSqlite implements Iterator<Book>, Closeable {
 
   private final PreparedStatement statement;
 
+  /**
+   * find books in SQLite3 db file.
+   *
+   * @param file database file
+   * @param query query
+   * @throws ClassNotFoundException Cannot load JDBC driver
+   * @throws SQLException query error
+   */
   protected FindSqlite(final String file, final Query query)
       throws ClassNotFoundException, SQLException {
     super();
