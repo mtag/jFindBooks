@@ -1,5 +1,7 @@
 package org.m_tag.jfind.books;
 
+import java.nio.file.Path;
+
 /**
  * query for finding books.
  */
@@ -21,5 +23,17 @@ public class Query {
 
   public void setTitle(String title) {
     this.title = title;
+  }
+  
+  /**
+   * matching found path and query.
+   *
+   * @param path found path
+   * @return matched or not
+   */
+  public boolean matches(final Path path) {
+    String name = path.getFileName().toString();
+    return (author != null && name.contains(author))
+        || (title != null && name.contains(title));
   }
 }
