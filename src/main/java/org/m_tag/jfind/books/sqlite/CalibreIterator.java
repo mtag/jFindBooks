@@ -3,6 +3,7 @@ package org.m_tag.jfind.books.sqlite;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import org.m_tag.jfind.books.Config;
 import org.m_tag.jfind.books.Query;
 
 /**

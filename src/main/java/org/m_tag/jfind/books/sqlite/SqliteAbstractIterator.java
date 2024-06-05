@@ -1,13 +1,11 @@
 package org.m_tag.jfind.books.sqlite;
 
-import java.io.Closeable;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Spliterator;
 import java.util.Spliterators;
@@ -112,6 +110,12 @@ public abstract class SqliteAbstractIterator implements BookIterator {
     return StreamSupport.stream(spliterator, false);
   }
 
+  /**
+   * read resultSet and create book from the record.
+   * @param rs resultSet
+   * @return book based on the read record.
+   * @throws SQLException errors in reading field.
+   */
   protected Book readRecord(final ResultSet rs) throws SQLException {
     final Book book = new SqliteBook();
     book.setAuthor(rs.getString("author")); //$NON-NLS-1$

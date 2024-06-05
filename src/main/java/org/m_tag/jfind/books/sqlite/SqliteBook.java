@@ -14,5 +14,4 @@ public class SqliteBook extends Book {
     this.setAuthor(author);
     this.setTitle(title);
   }
-
 }
