@@ -1,24 +1,25 @@
 package org.m_tag.jfind.books.sqlite;
 
+import java.io.Closeable;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 import org.m_tag.jfind.books.Book;
-import org.m_tag.jfind.books.BookIterator;
 import org.m_tag.jfind.books.Query;
 
 /**
  * Find books from sqlite3 db.
  */
-public abstract class SqliteAbstractIterator implements BookIterator {
+public abstract class SqliteAbstractIterator implements Iterator<Book>, Closeable  {
   private Book book = null;
   private final Connection connection;
   private final ResultSet resultSet;
@@ -112,14 +113,14 @@ public abstract class SqliteAbstractIterator implements BookIterator {
 
   /**
    * read resultSet and create book from the record.
+   *
    * @param rs resultSet
    * @return book based on the read record.
    * @throws SQLException errors in reading field.
    */
   protected Book readRecord(final ResultSet rs) throws SQLException {
-    final Book book = new SqliteBook();
-    book.setAuthor(rs.getString("author")); //$NON-NLS-1$
-    book.setTitle(rs.getString("title")); //$NON-NLS-1$
-    return book;
+    return new SqliteBook(
+        rs.getString("author"), //$NON-NLS-1$
+        rs.getString("title")); //$NON-NLS-1$
   }
 }
