@@ -1,4 +1,4 @@
-package org.m_tag.jfind.books.sqlite;
+package org.m_tag.jfind.books;
 
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
@@ -7,7 +7,7 @@ import java.util.ResourceBundle;
  * config for sqlite3 dbs.
  */
 public class Config {
-  private static final String BUNDLE_NAME = "sqlite"; //$NON-NLS-1$
+  private static final String BUNDLE_NAME = "config"; //$NON-NLS-1$
 
   private static ResourceBundle bundle = null;
 
