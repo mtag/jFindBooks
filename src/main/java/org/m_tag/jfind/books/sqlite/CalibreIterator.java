@@ -14,7 +14,25 @@ public class CalibreIterator extends SqliteAbstractIterator {
   /**
    * default path of metadata.db.
    */
-  private static String defaultMetadata = Config.getString(CALIBRE_METADATA); //$NON-NLS-1$
+  private static String defaultMetadata = getCalibreMetadata(); // $NON-NLS-1$
+
+  /**
+   * get default metadata.db path.
+   * @return default metadata.db path
+   */
+  private static String getCalibreMetadata() {
+    // 1. check environment variable
+    String path = System.getenv(CALIBRE_METADATA);
+    if (path != null && path.length() > 0) {
+      return path;
+    }
+    // 2. check properties file.
+    path = Config.getString(CALIBRE_METADATA);
+    if (path != null && path.length() > 0) {
+      return path;
+    }
+    return path;
+  }
 
   /**
    * getter for path of metadata.db
