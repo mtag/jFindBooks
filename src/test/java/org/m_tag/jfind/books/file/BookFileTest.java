@@ -19,7 +19,7 @@ class BookFileTest {
         + "/home/mtag/eclipse-workspace/jFindUtils/" + File.pathSeparator + "../jFindUtils/");
     Query query = new Query();
     query.setAuthor("FindFileIterator");
-    Book[] results = BookFile.find(file, query).toArray(Book[]::new);
+    Book[] results = BookFile.findDb(file, query).toArray(Book[]::new);
     assertEquals(1, results.length);
     assertTrue(((BookFile) results[0]).getPath().toFile().exists());
   }
