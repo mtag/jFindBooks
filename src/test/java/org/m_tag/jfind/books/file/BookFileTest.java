@@ -15,8 +15,14 @@ class BookFileTest {
 
   @Test
   void findFromDb() throws IOException {
-    DbFile file = new DbFile("../jFindUtils/src/test/resources/test.db" + File.pathSeparator
-        + "/home/mtag/eclipse-workspace/jFindUtils/" + File.pathSeparator + "../jFindUtils/");
+    String dbPaths = 
+        String.join(File.pathSeparator,
+            new String[] {
+                "../jFindUtils/src/test/resources/test.db",
+                "/home/mtag/eclipse-workspace/jFindUtils/",
+                "../jFindUtils/"});
+    DbFile file = new DbFile(dbPaths);
+
     Query query = new Query();
     query.setAuthor("FindFileIterator");
     Book[] results = BookFile.findDb(file, query).toArray(Book[]::new);

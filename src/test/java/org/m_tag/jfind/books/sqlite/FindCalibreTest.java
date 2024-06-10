@@ -9,6 +9,8 @@ import org.m_tag.jfind.books.Book;
 import org.m_tag.jfind.books.Query;
 
 class FindCalibreTest {
+  private static final String CALIBRE_METADATA = "./src/test/resources/metadata.db";
+  
   @Test
   void queryAll() throws ClassNotFoundException, IOException, SQLException {
     Book[] expected = {
@@ -17,7 +19,7 @@ class FindCalibreTest {
         };
     Query query = new Query();
     try (SqliteAbstractIterator calibre =
-        new CalibreIterator(CalibreIterator.getDefaultMetadata(), query)) {
+        new CalibreIterator(CALIBRE_METADATA, query)) {
       final Book[] value = calibre.stream().toArray(Book[]::new);
       assertEquals(expected.length, value.length);
       for (int i = 0; i < expected.length; i++) {
@@ -31,7 +33,7 @@ class FindCalibreTest {
     Book[] expected = {new SqliteBook("John Schember", "Quick Start Guide")};
     Query query = new Query();
     query.setAuthor("John Schember");
-    try (SqliteAbstractIterator calibre = new CalibreIterator(query)) {
+    try (SqliteAbstractIterator calibre = new CalibreIterator(CALIBRE_METADATA, query)) {
       final Book[] value = calibre.stream().toArray(Book[]::new);
       assertEquals(expected.length, value.length);
       for (int i = 0; i < expected.length; i++) {
@@ -46,7 +48,7 @@ class FindCalibreTest {
     Query query = new Query();
     query.setTitle("Quick Start Guide");
     try (SqliteAbstractIterator calibre =
-        new CalibreIterator(CalibreIterator.getDefaultMetadata(), query)) {
+        new CalibreIterator(CALIBRE_METADATA, query)) {
       final Book[] value = calibre.stream().toArray(Book[]::new);
       assertEquals(expected.length, value.length);
       for (int i = 0; i < expected.length; i++) {
@@ -62,7 +64,7 @@ class FindCalibreTest {
     query.setAuthor("John");
     query.setTitle("Guide");
     try (SqliteAbstractIterator calibre =
-        new CalibreIterator(CalibreIterator.getDefaultMetadata(), query)) {
+        new CalibreIterator(CALIBRE_METADATA, query)) {
       final Book[] value = calibre.stream().toArray(Book[]::new);
       assertEquals(expected.length, value.length);
       for (int i = 0; i < expected.length; i++) {
@@ -79,7 +81,7 @@ class FindCalibreTest {
     query.setAuthor("夏目");
     query.setTitle("猫");
     try (SqliteAbstractIterator calibre =
-        new CalibreIterator(CalibreIterator.getDefaultMetadata(), query)) {
+        new CalibreIterator(CALIBRE_METADATA, query)) {
       final Book[] value = calibre.stream().toArray(Book[]::new);
       assertEquals(expected.length, value.length);
       for (int i = 0; i < expected.length; i++) {

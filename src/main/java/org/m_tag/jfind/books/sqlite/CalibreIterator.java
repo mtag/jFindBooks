@@ -3,65 +3,13 @@ package org.m_tag.jfind.books.sqlite;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import org.m_tag.jfind.books.Config;
 import org.m_tag.jfind.books.Query;
 
 /**
  * Find book from calibre db.
  */
 public class CalibreIterator extends SqliteAbstractIterator {
-  public static final String CALIBRE_METADATA = "CALIBRE_METADATA";
-  /**
-   * default path of metadata.db.
-   */
-  private static String defaultMetadata = getCalibreMetadata(); // $NON-NLS-1$
 
-  /**
-   * get default metadata.db path.
-   * @return default metadata.db path
-   */
-  private static String getCalibreMetadata() {
-    // 1. check environment variable
-    String path = System.getenv(CALIBRE_METADATA);
-    if (path != null && path.length() > 0) {
-      return path;
-    }
-    // 2. check properties file.
-    path = Config.getString(CALIBRE_METADATA);
-    if (path != null && path.length() > 0) {
-      return path;
-    }
-    return path;
-  }
-
-  /**
-   * getter for path of metadata.db
-   *
-   * @return path of metadata.db
-   */
-  public static String getDefaultMetadata() {
-    return defaultMetadata;
-  }
-
-  /**
-   * setter for path of metadata.db.
-   *
-   * @param defaultMetadata path of metadata.db
-   */
-  public static void setDefaultMetadata(String defaultMetadata) {
-    CalibreIterator.defaultMetadata = defaultMetadata;
-  }
-
-  /**
-   * find books in Calibre db file.
-   *
-   * @param query query
-   * @throws ClassNotFoundException Cannot load JDBC driver
-   * @throws SQLException query error
-   */
-  public CalibreIterator(final Query query) throws ClassNotFoundException, SQLException {
-    this(defaultMetadata, query);
-  }
 
   /**
    * find books in Calibre db file.
