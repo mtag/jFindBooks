@@ -8,6 +8,15 @@ import java.nio.file.Path;
 public class Query {
   private String author;
   private String title;
+  private boolean exists = true;
+
+  public boolean isExists() {
+    return exists;
+  }
+
+  public void setExists(boolean exists) {
+    this.exists = exists;
+  }
 
   public String getAuthor() {
     return author;
