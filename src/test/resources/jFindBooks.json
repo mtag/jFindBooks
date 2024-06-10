@@ -9,5 +9,10 @@
 				"to": "../jFindUtils/"
 			}
 		]
+	},
+	{
+		"id" : "folder",
+		"type" : "folder",
+		"folder" : "./src/"
 	}
 ]

@@ -35,7 +35,7 @@ public class FindFolder extends Finder {
    */
   public FindFolder(final JsonValue value) {
     super();
-    this.folder = Path.of(readRequiredJsonValue(value, "path"));
+    this.folder = Path.of(readRequiredJsonValue(value, "folder"));
   }
 
   @Override
