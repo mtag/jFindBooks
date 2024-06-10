@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.m_tag.jfind.ReadingException;
 import org.m_tag.jfind.books.Book;
@@ -69,7 +68,6 @@ public class BookFile extends Book {
   public static Stream<Book> findDb(final DbFile db, final Query query) throws IOException {
     return db.stream().filter(query::matches).map(BookFile::new);
   }
-
 
   /**
    * find books from top directory.
