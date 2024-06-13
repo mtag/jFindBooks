@@ -24,7 +24,7 @@ public class FindFolder extends Finder {
    * @param folder target folder
    */
   public FindFolder(final Path folder) {
-    super();
+    super("", "");
     this.folder = folder;
   } 
   
@@ -33,9 +33,9 @@ public class FindFolder extends Finder {
    *
    * @param value part of json to find books from folder.
    */
-  public FindFolder(final JsonValue value) {
-    super();
-    this.folder = Path.of(readRequiredJsonValue(value, "folder"));
+  public FindFolder(final String type, final String id, final JsonValue value) {
+    super(type, id);
+    this.folder = Path.of(Finder.readRequiredJsonValue(value, "folder"));
   }
 
   @Override
@@ -44,4 +44,10 @@ public class FindFolder extends Finder {
     return stream.map(BookFile::new);
   }
 
+  @Override
+  protected void toString(StringBuilder builder) {
+    builder.append(",\"folder\":\"");
+    escape(builder, folder.toString());
+    builder.append('\"');
+  }
 }

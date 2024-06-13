@@ -17,6 +17,8 @@ import org.m_tag.jfind.utils.locate.DbFile;
  * Find books from locate db.
  */
 public class FindLocate extends Finder {
+  
+
   /**
    * db file.
    */
@@ -28,7 +30,7 @@ public class FindLocate extends Finder {
    * @param db locate db
    */
   public FindLocate(DbFile db) {
-    super();
+    super("", "");
     this.db = db;
   }
 
@@ -37,18 +39,19 @@ public class FindLocate extends Finder {
    *
    * @param json json value from config.
    */
-  public FindLocate(JsonValue json) {
-    this(createDbFile(json));
+  public FindLocate(final String type, final String id, final JsonValue json) {
+    super(type, id);
+    this.db = createDbFile(json);
   }
 
-  private static DbFile createDbFile(JsonValue json) {
-    final String dbFile = readRequiredJsonValue(json, "file");
+  private static DbFile createDbFile(final JsonValue json) {
+    final String dbFile = Finder.readRequiredJsonValue(json, "file");
     final JsonArray replaces = json.asJsonObject().get("replaces").asJsonArray();
     final String[][] array = new String[replaces.size()][];
     for (int i = 0; i < array.length; i++) {
       final JsonValue item = replaces.get(i);
-      final String from = readRequiredJsonValue(item, "from");
-      final String to = readRequiredJsonValue(item, "to");
+      final String from = Finder.readRequiredJsonValue(item, "from");
+      final String to = Finder.readRequiredJsonValue(item, "to");
       array[i] = new String[] {from, to};
     }
     final File file = new File(dbFile);
@@ -71,5 +74,30 @@ public class FindLocate extends Finder {
       matched = matched.filter(path -> exists(path));
     }
     return matched.map(BookFile::new);
+  }
+
+  @Override
+  protected void toString(StringBuilder builder) {
+    builder.append(",\"file\":\"");
+    escape(builder, db.getPath().toString());
+    builder.append('\"');
+    String[][] replacements = db.getReplacements();
+    if (replacements != null && replacements.length > 0) {
+      builder.append(",\"replaces\":[");
+      boolean isFirst = true;
+      for (String[] replacement : replacements) {
+        if (isFirst) {
+          isFirst = false;
+        } else {
+          builder.append(',');
+        }
+        builder.append("{\"from\":\"");
+        builder.append(replacement[0]);
+        builder.append("\",\"to\":\"");
+        escape(builder, replacement[1]);
+        builder.append("\"}");
+      }
+      builder.append("]");
+    }
   }
 }

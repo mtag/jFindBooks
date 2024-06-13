@@ -90,4 +90,8 @@ public class BookFile extends Book {
   public static Stream<Book> find(final Path top, final Query query) {
     return new FindFileIterator(top).stream().filter(query::matches).map(BookFile::new);
   }
+  
+  public String toString() {
+    return path.toString();
+  }
 }
