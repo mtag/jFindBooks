@@ -45,7 +45,6 @@ public abstract class Finder {
    */
   public abstract Stream<Book> find(final Query query) throws IOException;
   
-    
   protected abstract void toString(StringBuilder builder);
   
   @Override
