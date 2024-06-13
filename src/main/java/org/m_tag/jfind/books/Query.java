@@ -9,6 +9,21 @@ public class Query {
   private String author;
   private String title;
   private boolean exists = true;
+  private String replaceFrom;
+  private String replaceTo;
+  
+  public void setReplacement(String from, String to) {
+    this.replaceFrom = from;
+    this.replaceTo = to;
+  }
+
+  public String getReplaceFrom() {
+    return replaceFrom;
+  }
+
+  public String getReplaceTo() {
+    return replaceTo;
+  }
 
   public boolean isExists() {
     return exists;

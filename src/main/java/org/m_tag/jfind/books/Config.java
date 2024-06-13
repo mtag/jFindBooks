@@ -38,9 +38,12 @@ public class Config extends ParallelFinder {
     }
     try {
       return constructor.newInstance(type, id, json);
-    } catch (InstantiationException | IllegalAccessException | IllegalArgumentException
-        | InvocationTargetException ex) {
-      throw new IllegalArgumentException(String.format("Illegal constructor at type:%s", type), ex);
+    } catch (InstantiationException | IllegalAccessException | IllegalArgumentException ex) {
+      throw new IllegalArgumentException(
+          String.format("Illegal constructor at type:%s, %s", type, ex.getMessage()), ex);
+    } catch (InvocationTargetException ex) {
+      throw new IllegalArgumentException(
+          String.format("Error in constructor at type:%s, %s", type, ex.getMessage()), ex);
     }
   }
 

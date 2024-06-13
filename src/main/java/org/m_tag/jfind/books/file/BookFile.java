@@ -1,15 +1,10 @@
 package org.m_tag.jfind.books.file;
 
-import java.io.IOException;
 import java.nio.file.Path;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Stream;
 import org.m_tag.jfind.ReadingException;
 import org.m_tag.jfind.books.Book;
-import org.m_tag.jfind.books.Query;
-import org.m_tag.jfind.utils.find.FindFileIterator;
-import org.m_tag.jfind.utils.locate.DbFile;
 
 /**
  * Book as file.
@@ -57,40 +52,6 @@ public class BookFile extends Book {
     return path;
   }
 
-  /**
-   * find books from db.
-   *
-   * @param db locate db
-   * @param query query
-   * @return stream of found books
-   * @throws IOException error on opening db file.
-   */
-  public static Stream<Book> findDb(final DbFile db, final Query query) throws IOException {
-    return db.stream().filter(query::matches).map(BookFile::new);
-  }
-
-  /**
-   * find books from top directory.
-   *
-   * @param top top of finding directories.
-   * @param query query
-   * @return stream of found books
-   */
-  public static Stream<Book> find(final String top, final Query query) {
-    return find(Path.of(top), query);
-  }
-
-  /**
-   * find books from top directory.
-   *
-   * @param top top of finding directories.
-   * @param query query
-   * @return stream of found books
-   */
-  public static Stream<Book> find(final Path top, final Query query) {
-    return new FindFileIterator(top).stream().filter(query::matches).map(BookFile::new);
-  }
-  
   public String toString() {
     return path.toString();
   }

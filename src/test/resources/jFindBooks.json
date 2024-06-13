@@ -2,13 +2,7 @@
 	{
 		"id" : "locate",
 		"type" : "locate",
-		"file" : "../jFindUtils/src/test/resources/test.db",
-		"replaces": [
-			{
-				"from": "/home/mtag/eclipse-workspace/jFindUtils/",
-				"to": "../jFindUtils/"
-			}
-		]
+		"file" : "../jFindUtils/src/test/resources/test.db"
 	},
 	{
 		"id" : "folder",
