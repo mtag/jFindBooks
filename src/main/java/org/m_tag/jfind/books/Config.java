@@ -57,7 +57,7 @@ public class Config extends Finder {
     }
   }
 
-  private final Map<String, Finder> finds;
+  private final Map<String, Finder> finders;
 
   /**
    * constructor.
@@ -83,7 +83,7 @@ public class Config extends Finder {
       array.forEach(item -> {
         finder.put(Finder.readRequiredJsonValue(item, "id"), getFinder(item));
       });
-      this.finds = finder;
+      this.finders = finder;
     }
   }
 
@@ -100,7 +100,7 @@ public class Config extends Finder {
   @Override
   public Stream<Book> find(Query query) throws IOException {
     Stream<Book> ret = null;
-    for (Map.Entry<String, Finder> entry : finds.entrySet()) {
+    for (Map.Entry<String, Finder> entry : finders.entrySet()) {
       Finder finder = entry.getValue();
       Stream<Book> founds = finder.find(query);
       if (ret == null) {
@@ -117,7 +117,7 @@ public class Config extends Finder {
     StringBuilder builder = new StringBuilder();
     builder.append('[');
     boolean isFirst = true;
-    for (Map.Entry<String, Finder> entry : finds.entrySet()) {
+    for (Map.Entry<String, Finder> entry : finders.entrySet()) {
       String value = entry.getValue().toString();
       if (value == null) {
         return value;
