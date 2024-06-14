@@ -2,8 +2,7 @@ package org.m_tag.jfind.books.file;
 
 import static org.m_tag.jfind.utils.FilterMethods.exists;
 
-import jakarta.json.JsonValue;
-import java.io.File;
+import jakarta.json.JsonObject;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -40,19 +39,19 @@ public class FindLocate extends Finder {
    *
    * @param json json value from config.
    */
-  public FindLocate(final String type, final String id, final JsonValue json) {
+  public FindLocate(final String type, final String id, final JsonObject json) {
     super(type, id);
     this.db = createDbFile(json);
   }
 
-  private static DbFile createDbFile(final JsonValue json) {
+  private static DbFile createDbFile(final JsonObject json) {
     final String dbFile = Finder.readRequiredJsonValue(json, "file");
     final Path path = Path.of(dbFile);
     if (!path.toFile().exists()) {
       throw new IllegalArgumentException(String.format("locate db file %s is not exist.", dbFile));
     }
     
-    String charsetName = Finder.readRequiredJsonValue(json, "charset");
+    String charsetName = json.asJsonObject().getString("charset");
     Charset charset;
     if (charsetName == null) {
       charset = StandardCharsets.UTF_8;

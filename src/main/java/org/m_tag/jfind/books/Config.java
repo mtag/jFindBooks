@@ -2,8 +2,8 @@ package org.m_tag.jfind.books;
 
 import jakarta.json.Json;
 import jakarta.json.JsonArray;
+import jakarta.json.JsonObject;
 import jakarta.json.JsonReader;
-import jakarta.json.JsonValue;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -29,7 +29,7 @@ public class Config extends ParallelFinder {
     registerFinder("folder", FindFolder.class);
   }
 
-  private static Finder getFinder(JsonValue json) {
+  private static Finder getFinder(JsonObject json) {
     final String type = Finder.readRequiredJsonValue(json, "type").toLowerCase();
     final String id = Finder.readRequiredJsonValue(json, "id").toLowerCase();
     final Constructor<? extends Finder> constructor = constructors.get(type);
@@ -50,7 +50,7 @@ public class Config extends ParallelFinder {
   protected static void registerFinder(String key, Class<? extends Finder> cl) {
     try {
       final Constructor<? extends Finder> constructor =
-          cl.getConstructor(String.class, String.class, JsonValue.class);
+          cl.getConstructor(String.class, String.class, JsonObject.class);
       constructors.put(key, constructor);
     } catch (NoSuchMethodException ex) {
       // TODO 直す
@@ -83,7 +83,10 @@ public class Config extends ParallelFinder {
     try (final JsonReader reader = Json.createReader(new FileInputStream(configPath.toFile()))) {
       JsonArray array = reader.readArray();
       Map<String, Finder> finder = new LinkedHashMap<>();
-      array.forEach(item -> finder.put(Finder.readRequiredJsonValue(item, "id"), getFinder(item)));
+      array.forEach(item -> {
+        final JsonObject object = item.asJsonObject();
+        finder.put(Finder.readRequiredJsonValue(object, "id"), getFinder(object));
+      });
       return finder;
     }
   }

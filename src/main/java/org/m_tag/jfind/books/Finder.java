@@ -1,6 +1,6 @@
 package org.m_tag.jfind.books;
 
-import jakarta.json.JsonValue;
+import jakarta.json.JsonObject;
 import java.io.File;
 import java.io.IOException;
 import java.util.stream.Stream;
@@ -9,8 +9,8 @@ import java.util.stream.Stream;
  * base class for all finding classes including Config Class to find books with children.
  */
 public abstract class Finder {
-  protected static String readRequiredJsonValue(JsonValue json, final String key) {
-    String id = json.asJsonObject().getString(key);
+  protected static String readRequiredJsonValue(JsonObject json, final String key) {
+    String id = json.getString(key);
     if (id == null) {
       throw new IllegalArgumentException(String.format("no %s found:%s", key, json.toString()));
     }

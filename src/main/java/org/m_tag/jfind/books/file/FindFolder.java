@@ -1,6 +1,6 @@
 package org.m_tag.jfind.books.file;
 
-import jakarta.json.JsonValue;
+import jakarta.json.JsonObject;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.stream.Stream;
@@ -42,7 +42,7 @@ public class FindFolder extends Finder {
    *
    * @param value part of json to find books from folder.
    */
-  public FindFolder(final String type, final String id, final JsonValue value) {
+  public FindFolder(final String type, final String id, final JsonObject value) {
     super(type, id);
     this.folder = Path.of(Finder.readRequiredJsonValue(value, "folder"));
   }
