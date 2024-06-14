@@ -51,12 +51,11 @@ public class FindLocate extends Finder {
       throw new IllegalArgumentException(String.format("locate db file %s is not exist.", dbFile));
     }
     
-    String charsetName = json.asJsonObject().getString("charset");
     Charset charset;
-    if (charsetName == null) {
+    if (!json.containsKey("charset")) {
       charset = StandardCharsets.UTF_8;
     } else {
-      charset = Charset.forName(charsetName);
+      charset = Charset.forName(json.getString("charset"));
     }
     return new DbFile(path, charset);
   }
