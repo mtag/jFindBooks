@@ -25,7 +25,7 @@ public class FindFolder extends Finder {
    */
   public FindFolder(final String folderName) {
     this(Path.of(folderName));
-  } 
+  }
   
   /**
    * constructor.

@@ -2,7 +2,6 @@ package org.m_tag.jfind.books.file;
 
 import static org.m_tag.jfind.utils.FilterMethods.exists;
 
-import jakarta.json.JsonArray;
 import jakarta.json.JsonValue;
 import java.io.File;
 import java.io.IOException;
@@ -46,11 +45,11 @@ public class FindLocate extends Finder {
 
   private static DbFile createDbFile(final JsonValue json) {
     final String dbFile = Finder.readRequiredJsonValue(json, "file");
-    final File file = new File(dbFile);
-    if (!file.exists()) {
+    final Path path = Path.of(dbFile);
+    if (!path.toFile().exists()) {
       throw new IllegalArgumentException(String.format("locate db file %s is not exist.", dbFile));
     }
-    return new DbFile(file);
+    return new DbFile(path);
   }
 
   /**
