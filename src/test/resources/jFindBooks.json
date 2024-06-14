@@ -2,7 +2,8 @@
 	{
 		"id" : "locate",
 		"type" : "locate",
-		"file" : "../jFindUtils/src/test/resources/test.db"
+		"file" : "../jFindUtils/src/test/resources/test.db",
+		"charset" : "UTF-8"
 	},
 	{
 		"id" : "folder",

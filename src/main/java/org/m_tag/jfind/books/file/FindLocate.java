@@ -5,6 +5,8 @@ import static org.m_tag.jfind.utils.FilterMethods.exists;
 import jakarta.json.JsonValue;
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.stream.Stream;
 import org.m_tag.jfind.books.Book;
@@ -49,7 +51,15 @@ public class FindLocate extends Finder {
     if (!path.toFile().exists()) {
       throw new IllegalArgumentException(String.format("locate db file %s is not exist.", dbFile));
     }
-    return new DbFile(path);
+    
+    String charsetName = Finder.readRequiredJsonValue(json, "charset");
+    Charset charset;
+    if (charsetName == null) {
+      charset = StandardCharsets.UTF_8;
+    } else {
+      charset = Charset.forName(charsetName);
+    }
+    return new DbFile(path, charset);
   }
 
   /**
