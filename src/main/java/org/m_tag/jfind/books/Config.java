@@ -4,7 +4,6 @@ import jakarta.json.Json;
 import jakarta.json.JsonArray;
 import jakarta.json.JsonObject;
 import jakarta.json.JsonReader;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.lang.reflect.Constructor;
@@ -20,7 +19,6 @@ import org.m_tag.jfind.books.file.FindLocate;
  * config for sqlite3 dbs.
  */
 public class Config extends ParallelFinder {
-
 
   private static final Map<String, Constructor<? extends Finder>> constructors = new HashMap<>();
 
@@ -57,6 +55,8 @@ public class Config extends ParallelFinder {
       ex.printStackTrace();
     }
   }
+
+  public static final String JFINDBOOKS_JSON = "JFINDBOOKS_JSON";
 
   /**
    * constructor.

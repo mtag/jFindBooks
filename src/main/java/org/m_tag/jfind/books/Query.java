@@ -1,6 +1,5 @@
 package org.m_tag.jfind.books;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -128,11 +127,18 @@ public class Query {
     }
   }
 
+  /**
+   * main for command line.
+   *
+   * @param args arguments from command line
+   * @throws IOException IO error
+   */
   public static void main(String[] args) throws IOException {
-    String file = null;
+    String file = System.getenv().get(Config.JFINDBOOKS_JSON);
     final Query query = new Query();
     query.setExists(false);
-    for (int i = 0; i < args.length; i++) {
+    int i = 0;
+    while (i < args.length) {
       String arg = args[i];
       switch (arg) {
         case "-f":
@@ -151,6 +157,7 @@ public class Query {
           query.setKeyword(arg);
           break;
       }
+      i++;
     }
     if (file == null) {
       System.err.println(
