@@ -1,6 +1,7 @@
 package org.m_tag.jfind.books;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.nio.file.Path;
 import org.junit.jupiter.api.Test;
 
