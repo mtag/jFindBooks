@@ -61,16 +61,6 @@ public class Config extends ParallelFinder {
   /**
    * constructor.
    *
-   * @param file path of config.json
-   * @throws FileNotFoundException configPath file does not exists.
-   */
-  public Config(final File file) throws FileNotFoundException {
-    this(file.toPath());
-  }
-
-  /**
-   * constructor.
-   *
    * @param configPath path of config.json
    * @throws FileNotFoundException configPath file does not exists.
    */
