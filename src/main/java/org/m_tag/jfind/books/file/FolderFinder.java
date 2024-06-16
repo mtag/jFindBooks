@@ -40,6 +40,8 @@ public class FolderFinder extends Finder {
   /**
    * constructor.
    *
+   * @param type type of Finder
+   * @param id id of Finder 
    * @param value part of json to find books from folder.
    */
   public FolderFinder(final String type, final String id, final JsonObject value) {

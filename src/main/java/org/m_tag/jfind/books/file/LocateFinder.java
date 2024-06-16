@@ -37,14 +37,16 @@ public class LocateFinder extends Finder {
   /**
    * constructor.
    *
-   * @param json json value from config.
+   * @param type type of Finder
+   * @param id id of Finder 
+   * @param object json value from config.
    */
-  public LocateFinder(final String type, final String id, final JsonObject json) {
+  public LocateFinder(final String type, final String id, final JsonObject object) {
     super(type, id);
-    this.db = createDbFile(json);
+    this.db = newDbFile(object);
   }
 
-  private static DbFile createDbFile(final JsonObject json) {
+  private static DbFile newDbFile(final JsonObject json) {
     final String dbFile = Finder.readRequiredJsonValue(json, "file");
     final Path path = Path.of(dbFile);
     if (!path.toFile().exists()) {
