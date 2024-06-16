@@ -16,7 +16,7 @@ import org.m_tag.jfind.utils.locate.DbFile;
 /**
  * Find books from locate db.
  */
-public class FindLocate extends Finder {
+public class LocateFinder extends Finder {
   
 
   /**
@@ -29,7 +29,7 @@ public class FindLocate extends Finder {
    *
    * @param db locate db
    */
-  public FindLocate(DbFile db) {
+  public LocateFinder(DbFile db) {
     super("", "");
     this.db = db;
   }
@@ -39,7 +39,7 @@ public class FindLocate extends Finder {
    *
    * @param json json value from config.
    */
-  public FindLocate(final String type, final String id, final JsonObject json) {
+  public LocateFinder(final String type, final String id, final JsonObject json) {
     super(type, id);
     this.db = createDbFile(json);
   }

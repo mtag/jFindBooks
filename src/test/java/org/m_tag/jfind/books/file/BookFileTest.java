@@ -18,7 +18,7 @@ class BookFileTest {
     Query query = new Query();
     query.setReplacement("/home/mtag/eclipse-workspace/jFindUtils/", "../jFindUtils/");
     query.setKeyword("FindFileIterator");
-    FindLocate locate = new FindLocate(file);
+    LocateFinder locate = new LocateFinder(file);
     Book[] results = locate.find(query).toArray(Book[]::new);
     assertEquals(1, results.length);
     assertTrue(((BookFile) results[0]).getPath().toFile().exists());
@@ -28,7 +28,7 @@ class BookFileTest {
   void findFromDir() throws IOException {
     Query query = new Query();
     query.setKeyword("BookFile");
-    FindFolder find = new FindFolder("src/main/java/");
+    FolderFinder find = new FolderFinder("src/main/java/");
     Book[] results = find.find(query).toArray(Book[]::new);
     assertEquals(1, results.length);
     assertTrue(((BookFile) results[0]).getPath().toFile().exists());

@@ -12,8 +12,8 @@ import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import org.m_tag.jfind.books.file.FindFolder;
-import org.m_tag.jfind.books.file.FindLocate;
+import org.m_tag.jfind.books.file.FolderFinder;
+import org.m_tag.jfind.books.file.LocateFinder;
 
 /**
  * config for sqlite3 dbs.
@@ -23,8 +23,8 @@ public class Config extends ParallelFinder {
   private static final Map<String, Constructor<? extends Finder>> constructors = new HashMap<>();
 
   static {
-    registerFinder("locate", FindLocate.class);
-    registerFinder("folder", FindFolder.class);
+    registerFinder("locate", LocateFinder.class);
+    registerFinder("folder", FolderFinder.class);
   }
 
   private static Finder getFinder(JsonObject json) {
@@ -71,7 +71,8 @@ public class Config extends ParallelFinder {
   private static Map<String, Finder> getFinders(final Path configPath)
       throws FileNotFoundException {
     try (final JsonReader reader = Json.createReader(new FileInputStream(configPath.toFile()))) {
-      JsonArray array = reader.readArray();
+      JsonObject top = reader.readObject();
+      JsonArray array =  top.getJsonArray("finders");
       Map<String, Finder> finder = new LinkedHashMap<>();
       array.forEach(item -> {
         final JsonObject object = item.asJsonObject();

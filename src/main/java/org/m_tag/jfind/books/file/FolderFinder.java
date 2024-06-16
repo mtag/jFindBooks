@@ -12,7 +12,7 @@ import org.m_tag.jfind.utils.find.FindFileIterator;
 /**
  * Find books from folder as a file.
  */
-public class FindFolder extends Finder {
+public class FolderFinder extends Finder {
   /**
    * target folder.
    */
@@ -23,7 +23,7 @@ public class FindFolder extends Finder {
    *
    * @param folderName target folder
    */
-  public FindFolder(final String folderName) {
+  public FolderFinder(final String folderName) {
     this(Path.of(folderName));
   }
   
@@ -32,7 +32,7 @@ public class FindFolder extends Finder {
    *
    * @param folder target folder
    */
-  public FindFolder(final Path folder) {
+  public FolderFinder(final Path folder) {
     super("", "");
     this.folder = folder;
   } 
@@ -42,7 +42,7 @@ public class FindFolder extends Finder {
    *
    * @param value part of json to find books from folder.
    */
-  public FindFolder(final String type, final String id, final JsonObject value) {
+  public FolderFinder(final String type, final String id, final JsonObject value) {
     super(type, id);
     this.folder = Path.of(Finder.readRequiredJsonValue(value, "folder"));
   }
