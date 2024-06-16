@@ -1,12 +1,13 @@
 package org.m_tag.jfind.books;
 
+import java.util.Arrays;
 import java.util.Objects;
 
 /**
  * Result record of found books.
  */
 public abstract class Book {
-  private String author;
+  private String[] authors;
 
   private String title;
   
@@ -37,11 +38,11 @@ public abstract class Book {
       return false;
     }
     Book other = (Book) obj;
-    return Objects.equals(author, other.author) && Objects.equals(title, other.title);
+    return Arrays.equals(authors, other.authors) && Objects.equals(title, other.title);
   }
 
-  public String getAuthor() {
-    return author;
+  public String[] getAuthors() {
+    return authors;
   }
 
   public String getTitle() {
@@ -50,11 +51,27 @@ public abstract class Book {
 
   @Override
   public int hashCode() {
-    return Objects.hash(author, title);
+    return Objects.hash(authors, title);
   }
 
   public void setAuthor(String author) {
-    this.author = author;
+    this.setAuthors(author.split("[×;]"));
+  }
+  
+  public void setAuthors(String[] authors) {
+    this.authors = authors;
+  }
+  
+  @Override
+  public String toString() {
+    StringBuilder builder = new StringBuilder();
+    if (authors != null  && authors.length > 0) {
+      builder.append('[');
+      builder.append(String.join("×", authors));
+      builder.append(") ");
+    }
+    builder.append(title);
+    return builder.toString();
   }
 
   public void setTitle(String title) {

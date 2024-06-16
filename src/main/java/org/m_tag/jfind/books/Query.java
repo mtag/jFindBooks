@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.m_tag.jfind.books.file.BookFile;
 
 /**
  * query for finding books.
@@ -165,8 +166,9 @@ public class Query {
               Query.class.getName()));
       System.exit(-1);
     }
-    for (Book item : new Config(Path.of(file)).find(query).toList()) {
-      System.out.println(item);
-    }
+    new Config(Path.of(file)).find(query).forEach(book -> {
+        System.out.println(book.toString());
+     
+    });
   }
 }

@@ -1,6 +1,8 @@
 package org.m_tag.jfind.books.file;
 
+import java.io.File;
 import java.nio.file.Path;
+import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.m_tag.jfind.ReadingException;
@@ -52,7 +54,17 @@ public class BookFile extends Book {
     return path;
   }
 
+  @Override
   public String toString() {
-    return path.toString();
+    File file = path.toFile();
+    long size;
+    if (!file.exists()) {
+      size = -1;
+    } else if (file.isDirectory()) {
+      size = 0;
+    } else {
+      size = file.length();
+    }
+    return String.format("%d %s", size, path.toString());
   }
 }

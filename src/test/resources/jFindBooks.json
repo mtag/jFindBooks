@@ -1,13 +1,15 @@
-[
-	{
-		"id" : "locate",
-		"type" : "locate",
-		"file" : "../jFindUtils/src/test/resources/test.db",
-		"charset" : "US-ASCII"
-	},
-	{
-		"id" : "folder",
-		"type" : "folder",
-		"folder" : "./src/"
-	}
-]
+{
+	"finders" : [
+		{
+			"id" : "locate",
+			"type" : "locate",
+			"file" : "../jFindUtils/src/test/resources/test.db",
+			"charset" : "US-ASCII"
+		},
+		{
+			"id" : "folder",
+			"type" : "folder",
+			"folder" : "./src/"
+		}
+	]
+}
