@@ -14,6 +14,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import org.m_tag.jfind.books.file.FolderFinder;
 import org.m_tag.jfind.books.file.LocateFinder;
+import org.m_tag.jfind.books.sqlite.CalibreFinder;
 
 /**
  * config for sqlite3 dbs.
@@ -25,6 +26,7 @@ public class Config extends ParallelFinder {
   static {
     registerFinder("locate", LocateFinder.class);
     registerFinder("folder", FolderFinder.class);
+    registerFinder("calibre", CalibreFinder.class);
   }
 
   private static Finder getFinder(JsonObject json) {

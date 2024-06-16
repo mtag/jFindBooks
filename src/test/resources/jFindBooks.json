@@ -10,6 +10,11 @@
 			"id" : "folder",
 			"type" : "folder",
 			"folder" : "./src/"
+		},
+		{
+			"id" : "calibre",
+			"type" : "calibre",
+			"metadata" : "src/test/resources/metadata.db"
 		}
 	]
 }
