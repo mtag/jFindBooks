@@ -3,6 +3,7 @@ package org.m_tag.jfind.books;
 import jakarta.json.JsonObject;
 import java.io.File;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.stream.Stream;
 
 /**
@@ -42,8 +43,11 @@ public abstract class Finder {
    * @param query search criteria
    * @return found books
    * @throws IOException Error in reading file or db.
+   * @throws SQLException Error in select from rdb.
+   * @throws ClassNotFoundException failed to load JDBC driver.
    */
-  public abstract Stream<Book> find(final Query query) throws IOException;
+  public abstract Stream<Book> find(final Query query)
+      throws IOException, ClassNotFoundException, SQLException;
   
   protected abstract void toString(StringBuilder builder);
   

@@ -3,6 +3,7 @@ package org.m_tag.jfind.books;
 
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.Map;
 import java.util.stream.Stream;
 
@@ -24,7 +25,7 @@ public abstract class ParallelFinder extends Finder {
   }
 
   @Override
-  public Stream<Book> find(Query query) throws IOException {
+  public Stream<Book> find(Query query) throws IOException, ClassNotFoundException, SQLException  {
     Stream<Book> ret = null;
     // TODO use Executor or something
     for (Map.Entry<String, Finder> entry : finders.entrySet()) {

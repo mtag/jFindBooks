@@ -2,11 +2,11 @@ package org.m_tag.jfind.books;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.m_tag.jfind.books.file.BookFile;
 
 /**
  * query for finding books.
@@ -133,8 +133,10 @@ public class Query {
    *
    * @param args arguments from command line
    * @throws IOException IO error
+   * @throws SQLException Error in select from rdb.
+   * @throws ClassNotFoundException failed to load JDBC driver.
    */
-  public static void main(String[] args) throws IOException {
+  public static void main(String[] args) throws IOException, ClassNotFoundException, SQLException {
     String file = System.getenv().get(Config.JFINDBOOKS_JSON);
     final Query query = new Query();
     query.setExists(false);
@@ -166,9 +168,6 @@ public class Query {
               Query.class.getName()));
       System.exit(-1);
     }
-    new Config(Path.of(file)).find(query).forEach(book -> {
-        System.out.println(book.toString());
-     
-    });
+    new Config(Path.of(file)).find(query).forEach(book -> System.out.println(book.toString()));
   }
 }
