@@ -16,7 +16,14 @@ class ConfigTest {
     query.setKeyword("FindFileIterator");
     Config config = Config.getConfig(Path.of("src/test/resources/jFindBooks.json"));
     List<Book> books = config.find(query).toList();
-    assertEquals(3, books.size());
+    assertEquals(1, books.size());
+    final Book found = books.get(0);
+    assertEquals(
+          "..\\jFindUtils\\src\\main\\java\\org\\m_tag\\jfind\\utils\\find",
+          found.getLocation());
+    assertEquals(
+        "FindFileIterator.java",
+        found.getTitle());
   }
 
 }
