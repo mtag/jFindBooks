@@ -18,12 +18,12 @@ import org.m_tag.jfind.books.Query;
 /**
  * Find books from sqlite3 db.
  */
-public abstract class SqlIterator implements Iterator<Book>, Closeable  {
+public abstract class SqlIterator implements Iterator<Book>, Closeable {
   private Book book = null;
-  private  Connection connection;
-  private  ResultSet resultSet;
+  private Connection connection;
+  private ResultSet resultSet;
 
-  private  PreparedStatement statement;
+  private PreparedStatement statement;
   private Stream<Book> stream = null;
   private Query query;
   private final String url;
@@ -36,8 +36,7 @@ public abstract class SqlIterator implements Iterator<Book>, Closeable  {
    * @throws ClassNotFoundException Cannot load JDBC driver
    * @throws SQLException query error
    */
-  public SqlIterator(final String file, final Query query)
-      throws ClassNotFoundException {
+  public SqlIterator(final String file, final Query query) throws ClassNotFoundException {
     super();
     Class.forName("org.sqlite.JDBC");
     this.url = "jdbc:sqlite:" + file;
@@ -46,7 +45,7 @@ public abstract class SqlIterator implements Iterator<Book>, Closeable  {
   }
 
   @Override
-  public void close()  {
+  public void close() {
     if (stream != null) {
       return;
     }
@@ -134,8 +133,21 @@ public abstract class SqlIterator implements Iterator<Book>, Closeable  {
    * @throws SQLException errors in reading field.
    */
   protected Book readRecord(final ResultSet rs) throws SQLException {
-    return new SqliteBook(
-        rs.getString("author"), //$NON-NLS-1$
+    return new SqliteBook(rs.getString("author"), //$NON-NLS-1$
         rs.getString("title")); //$NON-NLS-1$
+  }
+
+  protected PreparedStatement setValues(final PreparedStatement prepared, final Query query,
+      int authorPos, int titlePos) throws SQLException {
+    final boolean hasKeyword = query.getKeyword() != null;
+    String author = hasKeyword ? query.getKeyword() : query.getAuthor();
+    String title = hasKeyword ? query.getKeyword() : query.getTitle();
+    if (authorPos != 0) {
+      prepared.setString(authorPos, '%' + author + '%');
+    }
+    if (titlePos != 0) {
+      prepared.setString(titlePos, '%' + title + '%');
+    }
+    return prepared;
   }
 }

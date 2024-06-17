@@ -50,10 +50,11 @@ public class CalibreFinder extends SqliteFinder {
             + " inner join authors on books_authors_link.author=authors.id "; //$NON-NLS-1$
         int author = 0;
         int title = 0;
-        if (query.getAuthor() != null) {
+        final boolean hasKeyword = query.getKeyword() != null;
+        if (hasKeyword || query.getAuthor() != null) {
           sql += " where name like ? "; //$NON-NLS-1$
           author = 1;
-          if (query.getTitle() != null) {
+          if (hasKeyword || query.getTitle() != null) {
             sql += " and title like ? "; //$NON-NLS-1$
             title = 2;
           }
@@ -62,13 +63,7 @@ public class CalibreFinder extends SqliteFinder {
           title = 1;
         }
         final PreparedStatement prepared = connection.prepareStatement(sql);
-        if (author != 0) {
-          prepared.setString(author, '%' + query.getAuthor() + '%');
-        }
-        if (title != 0) {
-          prepared.setString(title, '%' + query.getTitle() + '%');
-        }
-        return prepared;
+        return setValues(prepared, query, author, title);
       }
     };
   }
