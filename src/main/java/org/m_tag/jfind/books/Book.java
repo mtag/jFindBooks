@@ -55,7 +55,7 @@ public abstract class Book {
   }
 
   public void setAuthor(String author) {
-    this.setAuthors(author.split("[×;]"));
+    this.setAuthors(author.split("[×;,] *"));
   }
   
   public void setAuthors(String[] authors) {
