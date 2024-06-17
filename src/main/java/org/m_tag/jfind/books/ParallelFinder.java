@@ -33,7 +33,7 @@ public abstract class ParallelFinder extends Finder {
       if (ret == null) {
         ret = founds;
       } else {
-        ret = Stream.concat(ret, founds).parallel();
+        ret = Stream.concat(ret, founds).unordered().parallel();
       }
     }
     return ret;
