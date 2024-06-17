@@ -1,10 +1,12 @@
 package org.m_tag.jfind.books;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -57,6 +59,7 @@ public class Query {
 
   public void setTitle(String title) {
     this.title = title;
+    updatePattern();
   }
 
   public String getKeyword() {
@@ -110,7 +113,7 @@ public class Query {
         patterns.add(Pattern.compile(".*(" + escape(keyword) + ").*", 0));
       }
       if (title != null) {
-        patterns.add(Pattern.compile(".*.*\\].*(" + escape(title) + ").*"));
+        patterns.add(Pattern.compile(".*\\].*(" + escape(title) + ").*", 0));
       }
       if (author != null) {
         StringBuilder builder = new StringBuilder();
@@ -131,7 +134,7 @@ public class Query {
    * @throws ClassNotFoundException failed to load JDBC driver.
    */
   public static void main(String[] args) throws IOException, ClassNotFoundException, SQLException {
-    String file = System.getenv().get(Config.JFINDBOOKS_JSON);
+    String file = null;
     final Query query = new Query();
     query.setExists(false);
     int i = 0;
@@ -157,12 +160,32 @@ public class Query {
       i++;
     }
     if (file == null) {
-      System.err.println(
-          String.format("Usage: java %s -f json [-a author] [-t title] [-k keywork] [keyword]",
-              Query.class.getName()));
-      System.exit(-1);
+      file = getDefaultConfig();
     }
     Config.getConfig(Path.of(file)).find(query)
         .forEach(book -> System.out.println(book.toString()));
+  }
+
+  public static String getDefaultConfig() {
+    final Map<String, String> env = System.getenv();
+    String file = env.get(Config.JFINDBOOKS_JSON);
+    if (file == null) {
+      String homeConfig = null;
+      if (env.containsKey("HOME")) {
+        homeConfig = env.get("HOME") + File.separatorChar + ".jfindbook.json";
+      } else if (env.containsKey("USERPROFILE")) {
+        homeConfig = env.get("USERPROFILE") + File.separatorChar + "jfindbook.json";
+      }
+      if (homeConfig != null && new File(homeConfig).exists()) {
+        file = homeConfig;
+      }
+      if (file == null) {
+        System.err.println(
+            String.format("Usage: java %s -f json [-a author] [-t title] [-k keywork] [keyword]",
+                Query.class.getName()));
+        System.exit(-1);
+      }
+    }
+    return file;
   }
 }
