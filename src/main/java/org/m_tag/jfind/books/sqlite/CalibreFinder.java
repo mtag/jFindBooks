@@ -12,8 +12,12 @@ import org.m_tag.jfind.books.Query;
  */
 public class CalibreFinder extends SqliteFinder {
 
-
-  public CalibreFinder(String metadata) {
+  /**
+   * constructor.
+   *
+   * @param metadata sqlite3 db File Name
+   */
+  public CalibreFinder(final String metadata) {
     super(metadata);
   }
 
