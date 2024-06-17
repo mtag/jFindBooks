@@ -13,7 +13,7 @@ import org.m_tag.jfind.books.Book;
 public class BookFile extends Book {
   private final Path path;
   private static final Pattern pattern =
-      Pattern.compile("^[(]([^)]+)[)] *\\[([^\\]]+)\\] *(.*) *([v第]\\d.*)[.](rar|zip|7z|lzh)$",
+      Pattern.compile("^[(（]([^)）]+)[)）] *\\[([^\\]]+)\\] *(.*) *([v第]\\d.*)?[.](rar|zip|7z|lzh)$",
           Pattern.CASE_INSENSITIVE);
 
   /**
