@@ -14,8 +14,7 @@ class ConfigTest {
   void test() throws IOException, ClassNotFoundException, SQLException {
     final Query query = new Query();
     query.setKeyword("FindFileIterator");
-    query.setReplacement("/home/mtag/eclipse-workspace/jFindUtils/", "../jFindUtils/");
-    Config config = new Config(Path.of("src/test/resources/jFindBooks.json"));
+    Config config = Config.getConfig(Path.of("src/test/resources/jFindBooks.json"));
     List<Book> books = config.find(query).toList();
     assertEquals(3, books.size());
   }

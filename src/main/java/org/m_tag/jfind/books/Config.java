@@ -6,12 +6,17 @@ import jakarta.json.JsonObject;
 import jakarta.json.JsonReader;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Path;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 import org.m_tag.jfind.books.file.FolderFinder;
 import org.m_tag.jfind.books.file.LocateFinder;
 import org.m_tag.jfind.books.sqlite.CalibreFinder;
@@ -58,6 +63,8 @@ public class Config extends ParallelFinder {
     }
   }
 
+  private final List<String[]> replaces;
+  
   public static final String JFINDBOOKS_JSON = "JFINDBOOKS_JSON";
 
   /**
@@ -66,12 +73,36 @@ public class Config extends ParallelFinder {
    * @param configPath path of config.json
    * @throws FileNotFoundException configPath file does not exists.
    */
-  public Config(final Path configPath) throws FileNotFoundException {
-    super(getFinders(configPath));
+  private Config(final Map<String, Finder> finders, List<String[]> replaces)  {
+    super(finders);
+    this.replaces = replaces;
   }
 
-  private static Map<String, Finder> getFinders(final Path configPath)
-      throws FileNotFoundException {
+  @Override
+  public Stream<Book> find(Query query) throws IOException, ClassNotFoundException, SQLException {
+    query.setReplaces(replaces);
+    return super.find(query);
+  }
+
+  /**
+   * create Config instance.
+   *
+   * @param pathName path name of config.json
+   * @return Config instance
+   * @throws IOException error in reading config file 
+   */
+  public static Config getConfig(final String pathName) throws IOException {
+    return getConfig(Path.of(pathName));
+  }
+  
+  /**
+   * create Config instance.
+   *
+   * @param configPath path of config.json
+   * @return Config instance
+   * @throws IOException error in reading config file 
+   */
+  public static Config getConfig(final Path configPath) throws IOException {
     try (final JsonReader reader = Json.createReader(new FileInputStream(configPath.toFile()))) {
       JsonObject top = reader.readObject();
       JsonArray array =  top.getJsonArray("finders");
@@ -80,17 +111,19 @@ public class Config extends ParallelFinder {
         final JsonObject object = item.asJsonObject();
         finder.put(Finder.readRequiredJsonValue(object, "id"), getFinder(object));
       });
-      return finder;
+      List<String[]> replaces = new ArrayList<>();
+      if (top.containsKey("replaces")) {
+        JsonArray replaceArray = top.getJsonArray("replaces");
+        replaceArray.forEach(item -> {
+          final JsonObject object = item.asJsonObject();
+          String[] fromTo = new String[] {
+              readRequiredJsonValue(object, "from"),
+              readRequiredJsonValue(object, "to")
+          };
+          replaces.add(fromTo);
+        });
+      }
+      return new Config(finder, replaces);
     }
-  }
-
-  /**
-   * constructor.
-   *
-   * @param configPath path of config.json
-   * @throws FileNotFoundException configPath file does not exists.
-   */
-  public Config(final String configPath) throws FileNotFoundException {
-    this(Path.of(configPath));
   }
 }

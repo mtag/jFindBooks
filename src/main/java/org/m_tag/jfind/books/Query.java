@@ -15,8 +15,7 @@ public class Query {
   private String author;
   private String title;
   private boolean exists = true;
-  private String replaceFrom;
-  private String replaceTo;
+  private List<String[]> replaces;
   private final List<Pattern> patterns = new ArrayList<>();
   private String keyword;
   private boolean caseSensitive;
@@ -26,17 +25,12 @@ public class Query {
     updatePattern();
   }
 
-  public void setReplacement(String from, String to) {
-    this.replaceFrom = from;
-    this.replaceTo = to;
+  public List<String[]> getReplaces() {
+    return replaces;
   }
 
-  public String getReplaceFrom() {
-    return replaceFrom;
-  }
-
-  public String getReplaceTo() {
-    return replaceTo;
+  public void setReplaces(List<String[]> replaces) {
+    this.replaces = replaces;
   }
 
   public boolean isExists() {
@@ -168,6 +162,7 @@ public class Query {
               Query.class.getName()));
       System.exit(-1);
     }
-    new Config(Path.of(file)).find(query).forEach(book -> System.out.println(book.toString()));
+    Config.getConfig(Path.of(file)).find(query)
+        .forEach(book -> System.out.println(book.toString()));
   }
 }
