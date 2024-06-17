@@ -24,14 +24,14 @@ public abstract class Finder {
   /**
    * constructor.
    */
-  Finder() {
+  protected Finder() {
     this(null, null);
   }
   
   /**
    * constructor.
    */
-  protected Finder(String type, String id) {
+  protected Finder(final String type, final String id) {
     super();
     this.type = type;
     this.id = id;
@@ -53,6 +53,9 @@ public abstract class Finder {
   
   @Override
   public String toString() {
+    if (id == null || type == null) {
+      return super.toString();
+    }
     StringBuilder builder = new StringBuilder();
     builder.append('{');
     builder.append("\"id\":\"");

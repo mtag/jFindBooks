@@ -17,7 +17,7 @@ class ConfigTest {
     query.setReplacement("/home/mtag/eclipse-workspace/jFindUtils/", "../jFindUtils/");
     Config config = new Config(Path.of("src/test/resources/jFindBooks.json"));
     List<Book> books = config.find(query).toList();
-    assertEquals(1, books.size());
+    assertEquals(3, books.size());
   }
 
 }

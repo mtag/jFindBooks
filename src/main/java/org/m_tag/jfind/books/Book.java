@@ -68,7 +68,7 @@ public abstract class Book {
     if (authors != null  && authors.length > 0) {
       builder.append('[');
       builder.append(String.join("×", authors));
-      builder.append(") ");
+      builder.append("] ");
     }
     builder.append(title);
     return builder.toString();

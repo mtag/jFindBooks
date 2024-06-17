@@ -8,8 +8,16 @@ import org.m_tag.jfind.books.Book;
 import org.m_tag.jfind.books.Finder;
 import org.m_tag.jfind.books.Query;
 
+/**
+ * finder with calibre db.
+ */
 public class CalibreFinder extends Finder {
   private final String metadata;
+
+  public CalibreFinder(String metadata) {
+    super();
+    this.metadata = metadata;
+  }
 
   /**
    * constructor.

@@ -8,7 +8,7 @@ import org.m_tag.jfind.books.Query;
 /**
  * Find book from calibre db.
  */
-public class CalibreIterator extends SqliteAbstractIterator {
+public class CalibreIterator extends SqlIterator {
 
 
   /**

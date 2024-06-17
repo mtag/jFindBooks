@@ -1,7 +1,6 @@
 package org.m_tag.jfind.books.sqlite;
 
 import java.io.Closeable;
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -19,12 +18,15 @@ import org.m_tag.jfind.books.Query;
 /**
  * Find books from sqlite3 db.
  */
-public abstract class SqliteAbstractIterator implements Iterator<Book>, Closeable  {
+public abstract class SqlIterator implements Iterator<Book>, Closeable  {
   private Book book = null;
-  private final Connection connection;
-  private final ResultSet resultSet;
+  private  Connection connection;
+  private  ResultSet resultSet;
 
-  private final PreparedStatement statement;
+  private  PreparedStatement statement;
+  private Stream<Book> stream = null;
+  private Query query;
+  private final String url;
 
   /**
    * find books in SQLite3 db file.
@@ -34,19 +36,20 @@ public abstract class SqliteAbstractIterator implements Iterator<Book>, Closeabl
    * @throws ClassNotFoundException Cannot load JDBC driver
    * @throws SQLException query error
    */
-  protected SqliteAbstractIterator(final String file, final Query query)
-      throws ClassNotFoundException, SQLException {
+  protected SqlIterator(final String file, final Query query)
+      throws ClassNotFoundException {
     super();
     Class.forName("org.sqlite.JDBC");
-    final String url = "jdbc:sqlite:" + file;
-    this.connection = DriverManager.getConnection(url);
-    this.statement = prepare(connection, query);
-    this.resultSet = statement.executeQuery();
+    this.url = "jdbc:sqlite:" + file;
     this.book = null;
+    this.query = query;
   }
 
   @Override
-  public void close() throws IOException {
+  public void close()  {
+    if (stream != null) {
+      return;
+    }
     try {
       if (resultSet != null) {
         resultSet.close();
@@ -79,6 +82,11 @@ public abstract class SqliteAbstractIterator implements Iterator<Book>, Closeabl
       if (book != null) {
         return true;
       }
+      if (this.connection == null) {
+        this.connection = DriverManager.getConnection(url);
+        this.statement = prepare(connection, query);
+        this.resultSet = statement.executeQuery();
+      }
       if (!resultSet.next()) {
         return false;
       }
@@ -106,9 +114,16 @@ public abstract class SqliteAbstractIterator implements Iterator<Book>, Closeabl
    * @return stream for listed files.
    */
   public Stream<Book> stream() {
+    if (stream != null) {
+      throw new UnsupportedOperationException("stream() is called twice");
+    }
     final Spliterator<Book> spliterator =
         Spliterators.spliteratorUnknownSize(this, Spliterator.ORDERED | Spliterator.NONNULL);
-    return StreamSupport.stream(spliterator, false);
+    stream = StreamSupport.stream(spliterator, false).onClose(() -> {
+      this.stream = null;
+      this.close();
+    });
+    return stream;
   }
 
   /**

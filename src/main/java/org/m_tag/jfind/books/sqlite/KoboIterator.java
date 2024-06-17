@@ -7,7 +7,7 @@ import java.sql.SQLException;
 import org.m_tag.jfind.books.Book;
 import org.m_tag.jfind.books.Query;
 
-public class KoboIterator extends SqliteAbstractIterator  {
+public class KoboIterator extends SqlIterator  {
 
   public KoboIterator(String file, Query query) throws ClassNotFoundException, SQLException {
     super(file, query);
