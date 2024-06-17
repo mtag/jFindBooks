@@ -72,7 +72,7 @@ public abstract class SqlIterator implements Iterator<Book>, Closeable {
     }
   }
 
-  protected abstract PreparedStatement prepare(Connection connection, Query query)
+  protected abstract PreparedStatement prepare(Query query)
       throws SQLException;
 
   @Override
@@ -83,7 +83,7 @@ public abstract class SqlIterator implements Iterator<Book>, Closeable {
       }
       if (this.connection == null) {
         this.connection = DriverManager.getConnection(url);
-        this.statement = prepare(connection, query);
+        this.statement = prepare(query);
         this.resultSet = statement.executeQuery();
       }
       if (!resultSet.next()) {
@@ -125,6 +125,15 @@ public abstract class SqlIterator implements Iterator<Book>, Closeable {
     return stream;
   }
 
+  
+  protected Connection getConnection() {
+    return connection;
+  }
+
+  protected PreparedStatement getStatement() {
+    return statement;
+  }
+
   /**
    * read resultSet and create book from the record.
    *
@@ -137,17 +146,18 @@ public abstract class SqlIterator implements Iterator<Book>, Closeable {
         rs.getString("title")); //$NON-NLS-1$
   }
 
-  protected PreparedStatement setValues(final PreparedStatement prepared, final Query query,
+  protected PreparedStatement prepareAndSetValues(final String sql, final Query query,
       int authorPos, int titlePos) throws SQLException {
+    this.statement = getConnection().prepareStatement(sql);
     final boolean hasKeyword = query.getKeyword() != null;
     String author = hasKeyword ? query.getKeyword() : query.getAuthor();
     String title = hasKeyword ? query.getKeyword() : query.getTitle();
     if (authorPos != 0) {
-      prepared.setString(authorPos, '%' + author + '%');
+      statement.setString(authorPos, '%' + author + '%');
     }
     if (titlePos != 0) {
-      prepared.setString(titlePos, '%' + title + '%');
+      statement.setString(titlePos, '%' + title + '%');
     }
-    return prepared;
+    return statement;
   }
 }

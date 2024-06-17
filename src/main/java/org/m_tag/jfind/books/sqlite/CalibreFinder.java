@@ -43,7 +43,7 @@ public class CalibreFinder extends SqliteFinder {
   public SqlIterator iterator(Query query) throws ClassNotFoundException {
     return new SqlIterator(getDbFile(), query) {
       @Override
-      protected PreparedStatement prepare(final Connection connection, final Query query)
+      protected PreparedStatement prepare(final Query query)
           throws SQLException {
         String sql = "select name as author, title  from books " //$NON-NLS-1$
             + " inner join books_authors_link on books.id=books_authors_link.book " //$NON-NLS-1$
@@ -62,8 +62,7 @@ public class CalibreFinder extends SqliteFinder {
           sql += " where title like ? "; //$NON-NLS-1$
           title = 1;
         }
-        final PreparedStatement prepared = connection.prepareStatement(sql);
-        return setValues(prepared, query, author, title);
+        return prepareAndSetValues(sql, query, author, title);
       }
     };
   }
