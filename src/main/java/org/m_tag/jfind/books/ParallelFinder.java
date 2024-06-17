@@ -27,14 +27,13 @@ public abstract class ParallelFinder extends Finder {
   @Override
   public Stream<Book> find(Query query) throws IOException, ClassNotFoundException, SQLException  {
     Stream<Book> ret = null;
-    // TODO use Executor or something
     for (Map.Entry<String, Finder> entry : finders.entrySet()) {
       Finder finder = entry.getValue();
       Stream<Book> founds = finder.find(query);
       if (ret == null) {
         ret = founds;
       } else {
-        ret = Stream.concat(ret, founds);
+        ret = Stream.concat(ret, founds).parallel();
       }
     }
     return ret;
