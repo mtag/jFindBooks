@@ -19,5 +19,31 @@ class QueryTest {
     assertTrue(query.matches(Path.of("[test] sample")));
     assertTrue(query.matches(Path.of("(sample) [a×test×b] xyz")));
   }
+  
+  @Test
+  void testByTitle() {
+    Query query = new Query();
+    query.setTitle("test");
+    assertTrue(query.matches(Path.of("(sample) [a×test] test")));
+    assertTrue(query.matches(Path.of("(sample) [a×tes] test")));
+    assertTrue(!query.matches(Path.of("(test) [a] tst")));
+    assertTrue(!query.matches(Path.of("(test) [a] sample")));
+    assertTrue(!query.matches(Path.of("[a] sample")));
+    assertTrue(!query.matches(Path.of("[test] sample")));
+    assertTrue(query.matches(Path.of("(sample) [a×test×b] xytestz")));
+  }
+  
+  @Test
+  void testByKeyword() {
+    Query query = new Query();
+    query.setKeyword("test");
+    assertTrue(query.matches(Path.of("(sample) [a×test] test")));
+    assertTrue(query.matches(Path.of("(sample) [a×tes] test")));
+    assertTrue(query.matches(Path.of("(test) [a] tst")));
+    assertTrue(query.matches(Path.of("(test) [a] sample")));
+    assertTrue(!query.matches(Path.of("[a] sample")));
+    assertTrue(query.matches(Path.of("[test] sample")));
+    assertTrue(query.matches(Path.of("(sample) [a×test×b] xytestz")));
+  }
 
 }
