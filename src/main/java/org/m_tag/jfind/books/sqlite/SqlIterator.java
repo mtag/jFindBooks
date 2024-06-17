@@ -36,7 +36,7 @@ public abstract class SqlIterator implements Iterator<Book>, Closeable  {
    * @throws ClassNotFoundException Cannot load JDBC driver
    * @throws SQLException query error
    */
-  protected SqlIterator(final String file, final Query query)
+  public SqlIterator(final String file, final Query query)
       throws ClassNotFoundException {
     super();
     Class.forName("org.sqlite.JDBC");

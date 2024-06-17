@@ -16,5 +16,11 @@
 			"type" : "calibre",
 			"metadata" : "src/test/resources/metadata.db"
 		}
+	],
+	"replaces": [
+		{
+			"from" : "/home/mtag/eclipse-workspace/jFindUtils/",
+			"to" :  "../jFindUtils/"
+		}
 	]
 }

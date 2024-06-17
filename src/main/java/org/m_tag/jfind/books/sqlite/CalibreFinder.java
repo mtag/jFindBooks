@@ -1,22 +1,20 @@
 package org.m_tag.jfind.books.sqlite;
 
 import jakarta.json.JsonObject;
-import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.stream.Stream;
-import org.m_tag.jfind.books.Book;
 import org.m_tag.jfind.books.Finder;
 import org.m_tag.jfind.books.Query;
 
 /**
  * finder with calibre db.
  */
-public class CalibreFinder extends Finder {
-  private final String metadata;
+public class CalibreFinder extends SqliteFinder {
+
 
   public CalibreFinder(String metadata) {
-    super();
-    this.metadata = metadata;
+    super(metadata);
   }
 
   /**
@@ -27,21 +25,47 @@ public class CalibreFinder extends Finder {
    * @param object json value from config.
    */
   public CalibreFinder(final String type, final String id, final JsonObject object) {
-    super(type, id);
-    this.metadata = Finder.readRequiredJsonValue(object, "metadata");
-  }
-
-  @Override
-  public Stream<Book> find(Query query) throws IOException, ClassNotFoundException, SQLException {
-    try (final CalibreIterator iterator = new CalibreIterator(metadata, query)) {
-      return iterator.stream();
-    }
+    super(type, id, Finder.readRequiredJsonValue(object, "metadata"));
   }
 
   @Override
   protected void toString(StringBuilder builder) {
     builder.append(",\"metadata\":\"");
-    escape(builder, metadata);
+    escape(builder, getDbFile());
     builder.append('\"');
+  }
+  
+  @Override
+  public SqlIterator iterator(Query query) throws ClassNotFoundException {
+    return new SqlIterator(getDbFile(), query) {
+      @Override
+      protected PreparedStatement prepare(final Connection connection, final Query query)
+          throws SQLException {
+        String sql = "select name as author, title  from books " //$NON-NLS-1$
+            + " inner join books_authors_link on books.id=books_authors_link.book " //$NON-NLS-1$
+            + " inner join authors on books_authors_link.author=authors.id "; //$NON-NLS-1$
+        int author = 0;
+        int title = 0;
+        if (query.getAuthor() != null) {
+          sql += " where name like ? "; //$NON-NLS-1$
+          author = 1;
+          if (query.getTitle() != null) {
+            sql += " and title like ? "; //$NON-NLS-1$
+            title = 2;
+          }
+        } else if (query.getTitle() != null) {
+          sql += " where title like ? "; //$NON-NLS-1$
+          title = 1;
+        }
+        final PreparedStatement prepared = connection.prepareStatement(sql);
+        if (author != 0) {
+          prepared.setString(author, '%' + query.getAuthor() + '%');
+        }
+        if (title != 0) {
+          prepared.setString(title, '%' + query.getTitle() + '%');
+        }
+        return prepared;
+      }
+    };
   }
 }

@@ -37,8 +37,7 @@ class FindCalibreTest {
       new SqliteBook("夏目 漱石", "吾輩は猫である"),
     };
     Query query = new Query();
-    try (SqlIterator calibre = new CalibreIterator(CALIBRE_METADATA, query)) {
-      final Stream<Book> stream = calibre.stream();
+    try (final Stream<Book> stream = new CalibreFinder(CALIBRE_METADATA).find(query)) {
       final Book[] value = stream.toArray(Book[]::new);
       assertEquals(expected.length, value.length);
       for (int i = 0; i < expected.length; i++) {
@@ -52,8 +51,8 @@ class FindCalibreTest {
     Book[] expected = {new SqliteBook("John Schember", "Quick Start Guide")};
     Query query = new Query();
     query.setAuthor("John Schember");
-    try (SqlIterator calibre = new CalibreIterator(CALIBRE_METADATA, query)) {
-      final Book[] value = calibre.stream().toArray(Book[]::new);
+    try (final Stream<Book> stream = new CalibreFinder(CALIBRE_METADATA).find(query)) {
+      final Book[] value = stream.toArray(Book[]::new);
       assertEquals(expected.length, value.length);
       for (int i = 0; i < expected.length; i++) {
         assertEquals(expected[i], value[i]);
@@ -66,8 +65,8 @@ class FindCalibreTest {
     Book[] expected = {new SqliteBook("John Schember", "Quick Start Guide")};
     Query query = new Query();
     query.setTitle("Quick Start Guide");
-    try (SqlIterator calibre = new CalibreIterator(CALIBRE_METADATA, query)) {
-      final Book[] value = calibre.stream().toArray(Book[]::new);
+    try (final Stream<Book> stream = new CalibreFinder(CALIBRE_METADATA).find(query)) {
+      final Book[] value = stream.toArray(Book[]::new);
       assertEquals(expected.length, value.length);
       for (int i = 0; i < expected.length; i++) {
         assertEquals(expected[i], value[i]);
@@ -81,8 +80,8 @@ class FindCalibreTest {
     Query query = new Query();
     query.setAuthor("John");
     query.setTitle("Guide");
-    try (SqlIterator calibre = new CalibreIterator(CALIBRE_METADATA, query)) {
-      final Book[] value = calibre.stream().toArray(Book[]::new);
+    try (final Stream<Book> stream = new CalibreFinder(CALIBRE_METADATA).find(query)) {
+      final Book[] value = stream.toArray(Book[]::new);
       assertEquals(expected.length, value.length);
       for (int i = 0; i < expected.length; i++) {
         assertEquals(expected[i], value[i]);
@@ -97,8 +96,8 @@ class FindCalibreTest {
     Query query = new Query();
     query.setAuthor("夏目");
     query.setTitle("猫");
-    try (SqlIterator calibre = new CalibreIterator(CALIBRE_METADATA, query)) {
-      final Book[] value = calibre.stream().toArray(Book[]::new);
+    try (final Stream<Book> stream = new CalibreFinder(CALIBRE_METADATA).find(query)) {
+      final Book[] value = stream.toArray(Book[]::new);
       assertEquals(expected.length, value.length);
       for (int i = 0; i < expected.length; i++) {
         assertEquals(expected[i], value[i]);
