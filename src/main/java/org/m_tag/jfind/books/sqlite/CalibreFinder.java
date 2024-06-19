@@ -1,7 +1,6 @@
 package org.m_tag.jfind.books.sqlite;
 
 import jakarta.json.JsonObject;
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import org.m_tag.jfind.books.Finder;
