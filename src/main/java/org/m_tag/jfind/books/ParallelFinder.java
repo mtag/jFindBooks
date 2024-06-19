@@ -14,21 +14,24 @@ import java.util.stream.StreamSupport;
  */
 public abstract class ParallelFinder extends Finder {
 
+	static final int NO_LIMIT = Integer.MAX_VALUE;
+	
 	protected final Map<String, Finder> finders;
 
+	private final int limit;
+
 	protected ParallelFinder(Map<String, Finder> finders) {
+		this(finders, NO_LIMIT);
+	}
+	protected ParallelFinder(Map<String, Finder> finders, int limit) {
 		super();
 		this.finders = finders;
-	}
-
-	protected ParallelFinder(String type, String id, Map<String, Finder> finders) {
-		super(type, id);
-		this.finders = finders;
+		this.limit = limit;
 	}
 
 	@Override
 	public Stream<Book> find(final Query query) throws IOException, ClassNotFoundException, SQLException {
-		Iterator<Book> iterator = new ParallelIterator(finders, query);
+		Iterator<Book> iterator = new ParallelIterator(finders, query, limit);
 		Spliterator<Book> spliterator = Spliterators.spliteratorUnknownSize(iterator, 0);
 		return StreamSupport.stream(spliterator, false);
 	}

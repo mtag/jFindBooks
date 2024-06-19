@@ -26,7 +26,9 @@ import org.m_tag.jfind.books.sqlite.CalibreFinder;
  */
 public class Config extends ParallelFinder {
 
-  private static final Map<String, Constructor<? extends Finder>> constructors = new HashMap<>();
+  private static final String TIME_OUT = "timeOut";
+
+private static final Map<String, Constructor<? extends Finder>> constructors = new HashMap<>();
 
   static {
     registerFinder("locate", LocateFinder.class);
@@ -71,10 +73,11 @@ public class Config extends ParallelFinder {
    * constructor.
    *
    * @param configPath path of config.json
+   * @param timeOut timeout for not found in milliseconds.
    * @throws FileNotFoundException configPath file does not exists.
    */
-  private Config(final Map<String, Finder> finders, List<String[]> replaces)  {
-    super(finders);
+  private Config(final Map<String, Finder> finders, List<String[]> replaces, int timeOut)  {
+    super(finders, timeOut);
     this.replaces = replaces;
   }
 
@@ -123,7 +126,13 @@ public class Config extends ParallelFinder {
           replaces.add(fromTo);
         });
       }
-      return new Config(finder, replaces);
+      int timeOut;
+      if (top.containsKey(TIME_OUT)) {
+    	  timeOut = Integer.parseInt(top.getString(TIME_OUT));
+      } else {
+    	  timeOut = ParallelFinder.NO_LIMIT;
+      }
+      return new Config(finder, replaces, timeOut);
     }
   }
 }
