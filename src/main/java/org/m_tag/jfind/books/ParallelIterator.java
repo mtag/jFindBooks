@@ -58,19 +58,18 @@ public class ParallelIterator implements Iterator<Book> {
 		}
 
         try {
-            // すべてのタスクが完了するまで待つ（タイムアウト設定可能）
+            // waiting 10second to find. If no new founded book in the period, quit all threads to find.
             if (service.awaitTermination(10, TimeUnit.SECONDS)) {
-            	// terminated
+            	// finished all threads successfully.
             	return !queue.isEmpty();
-            } else {
-                // If timed out, check the queue.
-        		if (!queue.isEmpty()) {
-        			return true;
-        		}
-        		// If no books found in this period, shutdown finding.
-                service.shutdownNow();
-                return false;
             }
+            // If timed out, check the queue.
+    		if (!queue.isEmpty()) {
+    			return true;
+    		}
+    		// If no books found in this period, shutdown finding.
+            service.shutdownNow();
+            return false;
         } catch (InterruptedException e) {
             // If interrupted , shutdown all threads.
         	service.shutdownNow();
