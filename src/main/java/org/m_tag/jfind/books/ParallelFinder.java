@@ -2,12 +2,12 @@ package org.m_tag.jfind.books;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Iterator;
 import java.util.Map;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.Spliterator;
+import java.util.Spliterators;
 import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 /**
  * Combined finders for parallel query.
@@ -28,37 +28,9 @@ public abstract class ParallelFinder extends Finder {
 
 	@Override
 	public Stream<Book> find(final Query query) throws IOException, ClassNotFoundException, SQLException {
-		ExecutorService service = Executors.newFixedThreadPool(3);
-		final List<Book> results = new ArrayList<>();
-		for (Map.Entry<String, Finder> entry : finders.entrySet()) {
-			final Finder finder = entry.getValue();
-			service.execute(new Runnable() {
-
-				@Override
-				public void run() {
-					try {
-						try(Stream<Book> founds = finder.find(query)) {
-							founds.forEach(results::add);
-						}
-					} catch (ClassNotFoundException | IOException | SQLException ex) {
-						throw new FindingException(
-								String.format("Error in %s : %s", entry.getKey(), ex.getMessage()),
-								ex);
-					}
-				}
-			});
-		}
-		synchronized (service) {
-			while(true) {
-				try {
-					service.wait(1000);
-					break;
-				} catch (InterruptedException e) {
-					//e.printStackTrace();
-				}
-			}
-		}
-		return results.stream();
+		Iterator<Book> iterator = new ParallelIterator(finders, query);
+		Spliterator<Book> spliterator = Spliterators.spliteratorUnknownSize(iterator, 0);
+		return StreamSupport.stream(spliterator, false);
 	}
 
 	@Override
