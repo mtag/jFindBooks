@@ -2,6 +2,7 @@ package org.m_tag.jfind.books;
 
 import java.util.Arrays;
 import java.util.Objects;
+import java.util.regex.Pattern;
 
 /**
  * Result record of found books.
@@ -54,8 +55,13 @@ public abstract class Book {
     return Objects.hash(authors, title);
   }
 
+  /**
+   * comma not included in parenthesis.
+   */
+  private static final Pattern COMMA = Pattern.compile("( *[,×;] *)(?!([^,*]+\\)))");
+  
   public void setAuthor(String author) {
-    this.setAuthors(author.split("[×;,] *"));
+    this.setAuthors(COMMA.split(author));
   }
   
   public void setAuthors(String[] authors) {
