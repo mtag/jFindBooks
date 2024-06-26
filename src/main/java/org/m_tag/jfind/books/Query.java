@@ -14,117 +14,35 @@ import java.util.regex.Pattern;
  * query for finding books.
  */
 public class Query {
-  private String author;
-  private String title;
-  private boolean exists = true;
-  private List<String[]> replaces;
-  private final List<Pattern> patterns = new ArrayList<>();
-  private String keyword;
-  private boolean caseSensitive;
-
-  public Query() {
-    super();
-    updatePattern();
-  }
-
-  public List<String[]> getReplaces() {
-    return replaces;
-  }
-
-  public void setReplaces(List<String[]> replaces) {
-    this.replaces = replaces;
-  }
-
-  public boolean isExists() {
-    return exists;
-  }
-
-  public void setExists(boolean exists) {
-    this.exists = exists;
-    updatePattern();
-  }
-
-  public String getAuthor() {
-    return author;
-  }
-
-  public void setAuthor(String author) {
-    this.author = author;
-    updatePattern();
-  }
-
-  public String getTitle() {
-    return title;
-  }
-
-  public void setTitle(String title) {
-    this.title = title;
-    updatePattern();
-  }
-
-  public String getKeyword() {
-    return keyword;
-  }
-
-  public void setKeyword(String keyword) {
-    this.keyword = keyword;
-    updatePattern();
-  }
-
-  public boolean isCaseSensitive() {
-    return caseSensitive;
-  }
-
-  public void setCaseSensitive(boolean caseSensitive) {
-    this.caseSensitive = caseSensitive;
-    updatePattern();
-  }
-
   /**
-   * matching found path and query.
+   * get config file path for cli applications.
    *
-   * @param path found path
-   * @return matched or not
+   * @param args command line arguments.
+   * @return config path.
    */
-  public boolean matches(final Path path) {
-    if (patterns.isEmpty()) {
-      return true;
-    }
-    String name = path.getFileName().toString();
-    for (Pattern pattern : patterns) {
-      Matcher matcher = pattern.matcher(name);
-      if (!matcher.matches()) {
-        // and search
-        return false;
+  public static String getDefaultConfig(String[] args) {
+    final Map<String, String> env = System.getenv();
+    String file = env.get(Config.JFINDBOOKS_JSON);
+    if (file == null) {
+      String homeConfig = null;
+      if (env.containsKey("HOME")) {
+        homeConfig = env.get("HOME") + File.separatorChar + ".jfindbook.json";
+      } else if (env.containsKey("USERPROFILE")) {
+        homeConfig = env.get("USERPROFILE") + File.separatorChar + "jfindbook.json";
+      }
+      if (homeConfig != null && new File(homeConfig).exists()) {
+        file = homeConfig;
+      }
+      if (file == null) {
+        System.err.println(
+            String.format("Usage: java %s -f json [-a author] [-t title] [-k keywork] [keyword]",
+                Query.class.getName()));
+        System.exit(-1);
       }
     }
-    return true;
+    return file;
   }
-
-  private String escape(String word) {
-    return Pattern.quote(word);
-  }
-
-  private void updatePattern() {
-    synchronized (patterns) {
-      patterns.clear();
-
-      if (keyword != null) {
-        patterns.add(Pattern.compile(".*(" + escape(keyword) + ").*", 0));
-      }
-      if (title != null) {
-        patterns.add(Pattern.compile(".*\\].*(" + escape(title) + ").*", 0));
-      }
-      if (author != null) {
-        StringBuilder builder = new StringBuilder();
-        builder.append(".*\\[[^\\[\\]]*(");
-        builder.append(escape(author));
-        builder.append(")[^\\[\\]]*\\].*");
-        patterns.add(Pattern.compile(builder.toString()));
-      }
-    }
-  }
-
+  
   /**
    * main for command line.
    *
@@ -160,32 +78,147 @@ public class Query {
       i++;
     }
     if (file == null) {
-      file = getDefaultConfig();
+      file = getDefaultConfig(args);
     }
     Config.getConfig(Path.of(file)).find(query)
         .forEach(book -> System.out.println(book.toString()));
   }
+  
+  private String author;
+  private boolean caseSensitive;
+  private boolean exists = true;
+  private String keyword;
+  private final List<Pattern> patterns = new ArrayList<>();
 
-  public static String getDefaultConfig() {
-    final Map<String, String> env = System.getenv();
-    String file = env.get(Config.JFINDBOOKS_JSON);
-    if (file == null) {
-      String homeConfig = null;
-      if (env.containsKey("HOME")) {
-        homeConfig = env.get("HOME") + File.separatorChar + ".jfindbook.json";
-      } else if (env.containsKey("USERPROFILE")) {
-        homeConfig = env.get("USERPROFILE") + File.separatorChar + "jfindbook.json";
-      }
-      if (homeConfig != null && new File(homeConfig).exists()) {
-        file = homeConfig;
-      }
-      if (file == null) {
-        System.err.println(
-            String.format("Usage: java %s -f json [-a author] [-t title] [-k keywork] [keyword]",
-                Query.class.getName()));
-        System.exit(-1);
+  private List<String[]> replaces;
+
+  private String title;
+
+  public Query() {
+    super();
+    updatePattern();
+  }
+
+  private String escape(String word) {
+    return Pattern.quote(word);
+  }
+
+  public String getAuthor() {
+    return author;
+  }
+
+  public String getKeyword() {
+    return keyword;
+  }
+
+  public List<String[]> getReplaces() {
+    return replaces;
+  }
+
+  public String getTitle() {
+    return title;
+  }
+
+  public boolean isCaseSensitive() {
+    return caseSensitive;
+  }
+
+  public boolean isExists() {
+    return exists;
+  }
+
+  /**
+   * matching found path and query.
+   *
+   * @param path found path
+   * @return matched or not
+   */
+  public boolean matches(final Path path) {
+    if (patterns.isEmpty()) {
+      return true;
+    }
+    String name = path.getFileName().toString();
+    for (Pattern pattern : patterns) {
+      Matcher matcher = pattern.matcher(name);
+      if (!matcher.matches()) {
+        // and search
+        return false;
       }
     }
-    return file;
+    return true;
+  }
+
+  public void setAuthor(String author) {
+    this.author = author;
+    updatePattern();
+  }
+
+  public void setCaseSensitive(boolean caseSensitive) {
+    this.caseSensitive = caseSensitive;
+    updatePattern();
+  }
+
+  public void setExists(boolean exists) {
+    this.exists = exists;
+    updatePattern();
+  }
+
+  public void setKeyword(String keyword) {
+    this.keyword = keyword;
+    updatePattern();
+  }
+
+  public void setReplaces(List<String[]> replaces) {
+    this.replaces = replaces;
+  }
+
+  public void setTitle(String title) {
+    this.title = title;
+    updatePattern();
+  }
+
+  @Override
+  public String toString() {
+    StringBuilder builder = new StringBuilder();
+    builder.append('{');
+    builder.append("\"caseSensitive\":");
+    builder.append(caseSensitive);
+    builder.append(',');
+    extracted(builder, "author", author);
+    extracted(builder, "title", title);
+    extracted(builder, "keyword", keyword);
+    builder.delete(builder.length() - 1, builder.length());
+    builder.append('}');
+    return builder.toString();
+  }
+
+  private void extracted(StringBuilder builder, String fieldName, String field) {
+    if (field != null) {
+      builder.append('\"');
+      builder.append(fieldName);
+      builder.append("\":\"");
+      builder.append(field);
+      builder.append("\",");
+    }
+  }
+  
+  private void updatePattern() {
+    synchronized (patterns) {
+      patterns.clear();
+
+      if (keyword != null) {
+        patterns.add(Pattern.compile(".*(" + escape(keyword) + ").*", 0));
+      }
+      if (title != null) {
+        patterns.add(Pattern.compile(".*\\].*(" + escape(title) + ").*", 0));
+      }
+      if (author != null) {
+        StringBuilder builder = new StringBuilder();
+        builder.append(".*\\[[^\\[\\]]*(");
+        builder.append(escape(author));
+        builder.append(")[^\\[\\]]*\\].*");
+        patterns.add(Pattern.compile(builder.toString()));
+      }
+    }
   }
 }

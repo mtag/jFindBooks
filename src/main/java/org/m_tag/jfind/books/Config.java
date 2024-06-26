@@ -28,7 +28,7 @@ public class Config extends ParallelFinder {
 
   private static final String TIME_OUT = "timeOut";
 
-private static final Map<String, Constructor<? extends Finder>> constructors = new HashMap<>();
+  private static final Map<String, Constructor<? extends Finder>> constructors = new HashMap<>();
 
   static {
     registerFinder("locate", LocateFinder.class);
@@ -128,9 +128,9 @@ private static final Map<String, Constructor<? extends Finder>> constructors = n
       }
       int timeOut;
       if (top.containsKey(TIME_OUT)) {
-    	  timeOut = Integer.parseInt(top.getString(TIME_OUT));
+        timeOut = Integer.parseInt(top.getString(TIME_OUT));
       } else {
-    	  timeOut = ParallelFinder.NO_LIMIT;
+        timeOut = ParallelFinder.NO_LIMIT;
       }
       return new Config(finder, replaces, timeOut);
     }
