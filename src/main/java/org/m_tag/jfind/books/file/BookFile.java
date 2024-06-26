@@ -4,7 +4,6 @@ import java.io.File;
 import java.nio.file.Path;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.m_tag.jfind.ReadingException;
 import org.m_tag.jfind.books.Book;
 
 /**
@@ -12,9 +11,9 @@ import org.m_tag.jfind.books.Book;
  */
 public class BookFile extends Book {
   private final Path path;
-  private static final Pattern pattern =
-      Pattern.compile("^([(（]([^)）]+)[)）] *)*\\[([^\\]]+)\\] *(.*) *([v第]\\d.*)?[.](rar|zip|7z|lzh)$",
-          Pattern.CASE_INSENSITIVE);
+  private static final Pattern pattern = Pattern.compile(
+      "^([(（]([^)）]+)[)）] *)*\\[([^\\]]+)\\] *(.*) *([v第]\\d.*)?[.](rar|zip|7z|lzh)$",
+      Pattern.CASE_INSENSITIVE);
 
   /**
    * constructor.
@@ -25,23 +24,28 @@ public class BookFile extends Book {
     super();
     this.path = path;
 
-    Path dir = path.getParent();
-    String location = dir == null ? null : dir.toString();
+    final Path dir = path.getParent();
+    final String location = dir == null ? null : dir.toString();
     this.setLocation(location);
 
-    Path nameOnly = path.getFileName();
+    final Path nameOnly = path.getFileName();
+    String name;
     if (nameOnly == null) {
-      throw new ReadingException("no filename in path", new NullPointerException());
-    }
-    String name = nameOnly.toString();
-    Matcher matcher = pattern.matcher(name);
-    if (matcher.matches()) {
-      this.setAuthor(matcher.group(3));
-      this.setTitle(matcher.group(4));
+      // drive letter only (c:\)
+      name = path.toString();
     } else {
-      this.setAuthor("");
-      this.setTitle(name);
+      name = nameOnly.toString();
+
+      final Matcher matcher = pattern.matcher(name);
+      if (matcher.matches()) {
+        this.setAuthor(matcher.group(3));
+        this.setTitle(matcher.group(4));
+        return;
+      }
     }
+
+    this.setAuthor("");
+    this.setTitle(name);
   }
 
   /**
