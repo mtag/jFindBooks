@@ -82,7 +82,7 @@ public class Config extends ParallelFinder {
   }
 
   @Override
-  public Stream<Book> find(Query query) throws IOException, ClassNotFoundException, SQLException {
+  public Stream<Book> find(Query query) throws IOException, SQLException {
     query.setReplaces(replaces);
     return super.find(query);
   }

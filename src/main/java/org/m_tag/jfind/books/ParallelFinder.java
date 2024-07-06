@@ -32,7 +32,7 @@ public abstract class ParallelFinder extends Finder {
 
   @Override
   public Stream<Book> find(final Query query)
-      throws IOException, ClassNotFoundException, SQLException {
+      throws IOException, SQLException {
     Iterator<Book> iterator = new ParallelIterator(finders, query, limit);
     Spliterator<Book> spliterator = Spliterators.spliteratorUnknownSize(iterator, 0);
     return StreamSupport.stream(spliterator, false);
