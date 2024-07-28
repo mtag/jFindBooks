@@ -103,6 +103,16 @@ public class Query {
     return Pattern.quote(word);
   }
 
+  private void extracted(StringBuilder builder, String fieldName, String field) {
+    if (field != null) {
+      builder.append('\"');
+      builder.append(fieldName);
+      builder.append("\":\"");
+      builder.append(field);
+      builder.append("\",");
+    }
+  }
+
   public String getAuthor() {
     return author;
   }
@@ -190,16 +200,6 @@ public class Query {
     builder.delete(builder.length() - 1, builder.length());
     builder.append('}');
     return builder.toString();
-  }
-
-  private void extracted(StringBuilder builder, String fieldName, String field) {
-    if (field != null) {
-      builder.append('\"');
-      builder.append(fieldName);
-      builder.append("\":\"");
-      builder.append(field);
-      builder.append("\",");
-    }
   }
   
   private void updatePattern() {
