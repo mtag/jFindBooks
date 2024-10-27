@@ -15,6 +15,11 @@
 			"id" : "calibre",
 			"type" : "calibre",
 			"metadata" : "src/test/resources/metadata.db"
+		},
+		{
+			"id" : "text",
+			"type" : "text",
+			"file" : "src/test/resources/textfile.txt"
 		}
 	],
 	"replaces": [
