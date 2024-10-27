@@ -36,4 +36,14 @@ class BookFileTest {
     assertEquals(1, results.length);
     assertTrue(((BookFile) results[0]).getPath().toFile().exists());
   }
+  
+  @Test
+  void findFromTextFile() throws IOException {
+    Query query = new Query();
+    query.setKeyword("textfile");
+    TextFinder find = new TextFinder("src/test/resources/textfile.txt");
+    Book[] results = find.find(query).toArray(Book[]::new);
+    assertEquals(1, results.length);
+    assertTrue(((BookFile) results[0]).getPath().toFile().exists());
+  }
 }

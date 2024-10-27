@@ -1,0 +1,5 @@
+./src/test/resources/textfile.txt
+./dummy
+./src/test/resources/test.db
+./dummy2
+./src/test/resources/metadata.db
