@@ -57,6 +57,15 @@ public class BookFile extends Book {
     return path;
   }
 
+  /**
+   * get size of found file.
+   *
+   * @return file size.
+   */
+  public long getSize() {
+    return path.toFile().length();
+  }
+  
   @Override
   public String toString() {
     File file = path.toFile();

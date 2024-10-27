@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.stream.Stream;
 import org.m_tag.jfind.books.file.FolderFinder;
 import org.m_tag.jfind.books.file.LocateFinder;
+import org.m_tag.jfind.books.file.TextFinder;
 import org.m_tag.jfind.books.sqlite.CalibreFinder;
 
 /**
@@ -34,6 +35,7 @@ public class Config extends ParallelFinder {
     registerFinder("locate", LocateFinder.class);
     registerFinder("folder", FolderFinder.class);
     registerFinder("calibre", CalibreFinder.class);
+    registerFinder("text", TextFinder.class);
   }
 
   private static Finder getFinder(JsonObject json) {
