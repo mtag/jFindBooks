@@ -93,6 +93,8 @@ public class Query {
   private List<String[]> replaces;
 
   private String title;
+  
+  private int maxCount = ParallelFinder.NO_LIMIT;
 
   public Query() {
     super();
@@ -137,6 +139,10 @@ public class Query {
     return exists;
   }
 
+  protected int getMaxCount() {
+    return maxCount;
+  }
+
   /**
    * matching found path and query.
    *
@@ -157,7 +163,11 @@ public class Query {
     }
     return true;
   }
-
+  
+  protected void setMaxCount(int maxCount) {
+    this.maxCount = maxCount;
+  }
+  
   public void setAuthor(String author) {
     this.author = author;
     updatePattern();

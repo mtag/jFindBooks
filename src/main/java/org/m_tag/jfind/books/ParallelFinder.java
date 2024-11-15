@@ -18,22 +18,33 @@ public abstract class ParallelFinder extends Finder {
 
   protected final Map<String, Finder> finders;
 
-  private final int limit;
+  private final int timeLimit;
+  
+  private final int maxCount;
 
   protected ParallelFinder(Map<String, Finder> finders) {
-    this(finders, NO_LIMIT);
+    this(finders, NO_LIMIT, NO_LIMIT);
   }
 
-  protected ParallelFinder(Map<String, Finder> finders, int limit) {
+  protected ParallelFinder(Map<String, Finder> finders, int timeLimit, int maxCount) {
     super();
     this.finders = finders;
-    this.limit = limit;
+    this.timeLimit = timeLimit;
+    this.maxCount = maxCount;
   }
 
   @Override
   public Stream<Book> find(final Query query)
       throws IOException, SQLException {
-    Iterator<Book> iterator = new ParallelIterator(finders, query, limit);
+    int maxCount;
+    if (query.getMaxCount() == NO_LIMIT) {
+      maxCount = this.maxCount;
+    } else if (this.maxCount == NO_LIMIT) {
+      maxCount = query.getMaxCount();
+    } else {
+      maxCount = Math.min(this.maxCount, query.getMaxCount());
+    }
+    Iterator<Book> iterator = new ParallelIterator(finders, query, timeLimit, maxCount);
     Spliterator<Book> spliterator = Spliterators.spliteratorUnknownSize(iterator, 0);
     return StreamSupport.stream(spliterator, false);
   }

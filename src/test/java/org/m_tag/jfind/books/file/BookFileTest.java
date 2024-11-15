@@ -24,7 +24,9 @@ class BookFileTest {
     LocateFinder locate = new LocateFinder(file);
     Book[] results = locate.find(query).toArray(Book[]::new);
     assertEquals(1, results.length);
-    assertTrue(((BookFile) results[0]).getPath().toFile().exists());
+    final BookFile bookFile = (BookFile) results[0];
+    assertTrue(bookFile.getPath().toFile().exists());
+    assertEquals(2950, bookFile.getSize());
   }
 
   @Test
@@ -34,7 +36,9 @@ class BookFileTest {
     FolderFinder find = new FolderFinder("src/main/java/");
     Book[] results = find.find(query).toArray(Book[]::new);
     assertEquals(1, results.length);
-    assertTrue(((BookFile) results[0]).getPath().toFile().exists());
+    final BookFile bookFile = (BookFile) results[0];
+    assertTrue(bookFile.getPath().toFile().exists());
+    assertEquals(1767, bookFile.getSize());
   }
   
   @Test
@@ -44,6 +48,8 @@ class BookFileTest {
     TextFinder find = new TextFinder("src/test/resources/textfile.txt");
     Book[] results = find.find(query).toArray(Book[]::new);
     assertEquals(1, results.length);
-    assertTrue(((BookFile) results[0]).getPath().toFile().exists());
+    final BookFile bookFile = (BookFile) results[0];
+    assertTrue(bookFile.getPath().toFile().exists());
+    assertEquals(113, bookFile.getSize());
   }
 }
