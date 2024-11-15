@@ -13,7 +13,8 @@ public abstract class Finder {
   protected static String readRequiredJsonValue(JsonObject json, final String key) {
     String id = json.getString(key);
     if (id == null) {
-      throw new IllegalArgumentException(String.format("no %s found:%s", key, json.toString()));
+      throw new IllegalArgumentException(
+          String.format("no reqruired attribute %s found:%s", key, json.toString()));
     }
     return id;
   }
