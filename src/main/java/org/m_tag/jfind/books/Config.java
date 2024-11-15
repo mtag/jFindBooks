@@ -21,11 +21,17 @@ import org.m_tag.jfind.books.file.FolderFinder;
 import org.m_tag.jfind.books.file.LocateFinder;
 import org.m_tag.jfind.books.file.TextFinder;
 import org.m_tag.jfind.books.sqlite.CalibreFinder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * config for sqlite3 dbs.
  */
 public class Config extends ParallelFinder {
+  /**
+   * logger.
+   */
+  private static final Logger logger = LoggerFactory.getLogger(Config.class);
 
   private static final String TIME_OUT = "timeOut";
   private static final String MAX_COUNT = "maxCount";
@@ -49,11 +55,11 @@ public class Config extends ParallelFinder {
     try {
       return constructor.newInstance(type, id, json);
     } catch (InstantiationException | IllegalAccessException | IllegalArgumentException ex) {
-      throw new IllegalArgumentException(
-          String.format("Illegal constructor at type:%s, %s", type, ex.getMessage()), ex);
+      logger.error(String.format("Illegal constructor at type:%s, %s", type, ex.getMessage()), ex);
+      return null;
     } catch (InvocationTargetException ex) {
-      throw new IllegalArgumentException(
-          String.format("Error in constructor at type:%s, %s", type, ex.getMessage()), ex);
+      logger.error(String.format("Error in constructor at type:%s, %s", type, ex.getMessage()), ex);
+      return null;
     }
   }
 
@@ -63,8 +69,7 @@ public class Config extends ParallelFinder {
           cl.getConstructor(String.class, String.class, JsonObject.class);
       constructors.put(key, constructor);
     } catch (NoSuchMethodException ex) {
-      // TODO 直す
-      ex.printStackTrace();
+      logger.error("No construcotor found", ex);
     }
   }
 
@@ -114,10 +119,13 @@ public class Config extends ParallelFinder {
     try (final JsonReader reader = Json.createReader(new FileInputStream(configPath.toFile()))) {
       JsonObject top = reader.readObject();
       JsonArray array =  top.getJsonArray("finders");
-      Map<String, Finder> finder = new LinkedHashMap<>();
+      Map<String, Finder> finders = new LinkedHashMap<>();
       array.forEach(item -> {
         final JsonObject object = item.asJsonObject();
-        finder.put(Finder.readRequiredJsonValue(object, "id"), getFinder(object));
+        final Finder newFinder = getFinder(object);
+        if (newFinder != null) {
+          finders.put(Finder.readRequiredJsonValue(object, "id"), newFinder);
+        }
       });
       List<String[]> replaces = new ArrayList<>();
       if (top.containsKey("replaces")) {
@@ -143,7 +151,7 @@ public class Config extends ParallelFinder {
       } else {
         maxCount = ParallelFinder.NO_LIMIT;
       }
-      return new Config(finder, replaces, timeOut, maxCount);
+      return new Config(finders, replaces, timeOut, maxCount);
     }
   }
 }
