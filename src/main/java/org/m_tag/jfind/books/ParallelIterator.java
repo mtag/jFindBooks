@@ -66,7 +66,7 @@ public class ParallelIterator implements Iterator<Book> {
   
   @Override
   public boolean hasNext() {
-    while(true) {
+    while (true) {
       if (!queue.isEmpty()) {
         // having value
         return true;
