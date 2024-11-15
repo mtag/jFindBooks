@@ -45,6 +45,10 @@ public class Config extends ParallelFinder {
     registerFinder("text", TextFinder.class);
   }
 
+  private static void error(Throwable ex, String message, Object... params) {
+    logger.error(String.format(message, params), ex);
+  }
+  
   private static Finder getFinder(JsonObject json) {
     final String type = Finder.readRequiredJsonValue(json, "type").toLowerCase();
     final String id = Finder.readRequiredJsonValue(json, "id").toLowerCase();
@@ -55,10 +59,12 @@ public class Config extends ParallelFinder {
     try {
       return constructor.newInstance(type, id, json);
     } catch (InstantiationException | IllegalAccessException | IllegalArgumentException ex) {
-      logger.error(String.format("Illegal constructor at type:%s, %s", type, ex.getMessage()), ex);
+      error(ex, "Illegal constructor at type:%s:json=%s, %s", 
+          type, json.toString(), ex.getMessage());
       return null;
     } catch (InvocationTargetException ex) {
-      logger.error(String.format("Error in constructor at type:%s, %s", type, ex.getMessage()), ex);
+      error(ex, "Error in constructor at type:%s:json=%s, %s",
+          type, json.toString(), ex.getMessage());
       return null;
     }
   }
@@ -69,7 +75,7 @@ public class Config extends ParallelFinder {
           cl.getConstructor(String.class, String.class, JsonObject.class);
       constructors.put(key, constructor);
     } catch (NoSuchMethodException ex) {
-      logger.error("No construcotor found", ex);
+      error(ex, "No construcotor found");
     }
   }
 
