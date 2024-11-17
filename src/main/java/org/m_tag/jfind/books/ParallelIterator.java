@@ -105,7 +105,7 @@ public class ParallelIterator implements Iterator<Book> {
         throw new NoSuchElementException("no element now. Call hasNext() before next()");
       }
       final Book value;
-      synchronized(this) {
+      synchronized (this) {
         value = queue.pop();
       }
       return value;

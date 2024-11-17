@@ -1,5 +1,6 @@
 package org.m_tag.jfind.books.file;
 
+import jakarta.json.JsonObject;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -10,7 +11,6 @@ import org.m_tag.jfind.books.Book;
 import org.m_tag.jfind.books.Finder;
 import org.m_tag.jfind.books.Query;
 import org.m_tag.jfind.utils.text.TextFindIterator;
-import jakarta.json.JsonObject;
 
 /**
  * Find file names from text file.
