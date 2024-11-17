@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -25,7 +26,7 @@ public class ParallelIterator implements Iterator<Book> {
   private final long last;
   private final ExecutorService service;
   private final Deque<Book> queue = new ArrayDeque<>();
-  private int count = 0;
+  private final Map<String, Book> founded = new HashMap<>();
   private final List<Future<?>> threads = new ArrayList<>();
 
   /**
@@ -46,12 +47,15 @@ public class ParallelIterator implements Iterator<Book> {
       threads.add(service.submit(() -> {
         try (Stream<Book> founds = finder.find(query)) {
           founds.forEach(book -> {
-            synchronized (this) {
-              queue.push(book);
-              count++;
-              if ((maxCount != ParallelFinder.NO_LIMIT && count > maxCount)
-                  || (timeLimit != ParallelFinder.NO_LIMIT && System.currentTimeMillis() > last)) {
-                this.service.shutdownNow();
+            synchronized (founded) {
+              final String location = book.getLocation();
+              if (!founded.containsKey(location)) {
+                founded.put(location, book);
+                if ((maxCount != ParallelFinder.NO_LIMIT && founded.size() >= maxCount)
+                    || System.currentTimeMillis() > last) {
+                  this.service.shutdownNow();
+                }
+                queue.push(book);
               }
             }
           });
