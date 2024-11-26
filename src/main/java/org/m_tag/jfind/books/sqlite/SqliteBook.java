@@ -5,15 +5,16 @@ import org.m_tag.jfind.books.Book;
 /**
  * Found books from sqlite3 db.
  */
-public class SqliteBook extends Book {
+public abstract class SqliteBook extends Book {
   /**
    * constructor.
    *
    * @param author author of book
    * @param title title of book
+   * @param size byte size of book
    */
-  public SqliteBook(String author, String title) {
-    super();
+  public SqliteBook(String author, String title, Long size) {
+    super(size);
     this.setAuthor(author);
     this.setTitle(title);
   }

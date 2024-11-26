@@ -21,7 +21,7 @@ public class BookFile extends Book {
    * @param path path of the found file.
    */
   public BookFile(final Path path) {
-    super();
+    super(getSize(path));
     this.path = path;
 
     final Path dir = path.getParent();
@@ -62,21 +62,21 @@ public class BookFile extends Book {
    *
    * @return file size.
    */
-  public long getSize() {
-    return path.toFile().length();
+  private static Long getSize(Path path) {
+    final File file = path.toFile();
+    final Long size;
+    if (!file.exists()) {
+      size = null;
+    } else if (file.isDirectory()) {
+      size = 0L;
+    } else {
+      size = file.length();
+    }
+    return size;
   }
   
   @Override
   public String toString() {
-    File file = path.toFile();
-    long size;
-    if (!file.exists()) {
-      size = -1;
-    } else if (file.isDirectory()) {
-      size = 0;
-    } else {
-      size = file.length();
-    }
-    return String.format("%d %s", size, path.toString());
+    return String.format("%d %s", getSize(), path.toString());
   }
 }

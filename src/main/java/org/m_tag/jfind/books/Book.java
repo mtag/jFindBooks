@@ -7,12 +7,14 @@ import java.util.regex.Pattern;
 /**
  * Result record of found books.
  */
-public abstract class Book {
+public abstract class Book implements Comparable<Book> {
   private String[] authors;
 
   private String title;
   
   private String location;
+  
+  private final Long size;
 
   public String getLocation() {
     return location;
@@ -22,10 +24,15 @@ public abstract class Book {
     this.location = location;
   }
 
-  protected Book() {
+  /**
+   * constructor.
+   *
+   * @param size byte size of book
+   */
+  protected Book(Long size) {
     super();
+    this.size = size;
   }
-
 
   @Override
   public boolean equals(Object obj) {
@@ -50,9 +57,22 @@ public abstract class Book {
     return title;
   }
 
+  public Long getSize() {
+    return size;
+  }
+
   @Override
   public int hashCode() {
     return Objects.hash(authors, title);
+  }
+
+  @Override
+  public int compareTo(Book o) {
+    int result = toString().compareTo(o.toString());
+    if (result == 0) {
+      result = location.compareTo(o.location);
+    }
+    return result;
   }
 
   /**
@@ -60,11 +80,11 @@ public abstract class Book {
    */
   private static final Pattern COMMA = Pattern.compile("( *[,×;] *)(?!([^,*]+\\)))");
   
-  public void setAuthor(String author) {
+  protected void setAuthor(String author) {
     this.setAuthors(COMMA.split(author));
   }
   
-  public void setAuthors(String[] authors) {
+  protected void setAuthors(String[] authors) {
     this.authors = authors;
   }
   
@@ -80,7 +100,7 @@ public abstract class Book {
     return builder.toString();
   }
 
-  public void setTitle(String title) {
+  protected void setTitle(String title) {
     this.title = title;
   }
 }
