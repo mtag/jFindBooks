@@ -68,7 +68,7 @@ public class Config extends ParallelFinder {
       return null;
     }
   }
-
+  
   protected static void registerFinder(String key, Class<? extends Finder> cl) {
     try {
       final Constructor<? extends Finder> constructor =

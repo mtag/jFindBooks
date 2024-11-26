@@ -84,6 +84,7 @@ public class Query {
         .forEach(book -> System.out.println(book.toString()));
   }
   
+  private String genre;
   private String author;
   private boolean caseSensitive;
   private boolean exists = true;
@@ -113,6 +114,10 @@ public class Query {
       builder.append(field);
       builder.append("\",");
     }
+  }
+
+  public String getGenre() {
+    return genre;
   }
 
   public String getAuthor() {
@@ -167,7 +172,12 @@ public class Query {
   protected void setMaxCount(int maxCount) {
     this.maxCount = maxCount;
   }
-  
+
+  public void setGenre(String genre) {
+    this.genre = genre;
+    updatePattern();
+  }
+
   public void setAuthor(String author) {
     this.author = author;
     updatePattern();
@@ -221,6 +231,9 @@ public class Query {
       }
       if (title != null) {
         patterns.add(Pattern.compile(".*\\].*(" + escape(title) + ").*", 0));
+      }
+      if (genre != null) {
+        patterns.add(Pattern.compile("^\\([^()]*" + escape(genre) + "[^()]*\\).*", 0));
       }
       if (author != null) {
         StringBuilder builder = new StringBuilder();

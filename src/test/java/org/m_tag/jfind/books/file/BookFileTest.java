@@ -38,7 +38,7 @@ class BookFileTest {
     assertEquals(1, results.length);
     final BookFile bookFile = (BookFile) results[0];
     assertTrue(bookFile.getPath().toFile().exists());
-    assertEquals(1767, bookFile.getSize());
+    assertEquals(1799, bookFile.getSize());
   }
   
   @Test

@@ -141,10 +141,7 @@ public abstract class SqlIterator implements Iterator<Book>, Closeable {
    * @return book based on the read record.
    * @throws SQLException errors in reading field.
    */
-  protected Book readRecord(final ResultSet rs) throws SQLException {
-    return new SqliteBook(rs.getString("author"), //$NON-NLS-1$
-        rs.getString("title")); //$NON-NLS-1$
-  }
+  protected abstract Book readRecord(final ResultSet rs) throws SQLException;
 
   protected PreparedStatement prepareAndSetValues(final String sql, final Query query,
       int authorPos, int titlePos) throws SQLException {

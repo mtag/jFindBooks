@@ -32,7 +32,7 @@ public class LocateFinder extends Finder {
    *
    * @param db locate db
    */
-  public LocateFinder(DbFile db) {
+  public LocateFinder(final DbFile db) {
     super("", "");
     this.db = db;
   }

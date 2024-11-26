@@ -14,7 +14,7 @@
 		{
 			"id" : "calibre",
 			"type" : "calibre",
-			"metadata" : "src/test/resources/metadata.db"
+			"metadata" : "src/test/resources/"
 		},
 		{
 			"id" : "text",
