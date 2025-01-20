@@ -144,7 +144,7 @@ public class Query {
     return exists;
   }
 
-  protected int getMaxCount() {
+  public int getMaxCount() {
     return maxCount;
   }
 
@@ -169,7 +169,7 @@ public class Query {
     return true;
   }
   
-  protected void setMaxCount(int maxCount) {
+  public void setMaxCount(int maxCount) {
     this.maxCount = maxCount;
   }
 
