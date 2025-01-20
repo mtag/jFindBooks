@@ -20,7 +20,13 @@ import org.m_tag.jfind.utils.locate.DbFile;
  * Find books from locate db.
  */
 public class LocateFinder extends Finder {
+  private static final String CHECK_EXISTANCE = "checkExistance";
 
+  /**
+   * check file exists or not. If not, just read DB and return for external servers.
+   * Default value is true;
+   */
+  private final boolean checkExistance;
 
   /**
    * db file.
@@ -35,6 +41,7 @@ public class LocateFinder extends Finder {
   public LocateFinder(final DbFile db) {
     super("", "");
     this.db = db;
+    this.checkExistance = true;
   }
 
   /**
@@ -44,9 +51,11 @@ public class LocateFinder extends Finder {
    * @param id id of Finder
    * @param object json value from config.
    */
-  public LocateFinder(final String type, final String id, final JsonObject object) {
+  public LocateFinder(final String type, final String id, final JsonObject object) 
+        throws IllegalArgumentException {
     super(type, id);
     this.db = newDbFile(object);
+    this.checkExistance = getBooleanValue(id, object, CHECK_EXISTANCE, true);
   }
 
   private static DbFile newDbFile(final JsonObject json) {
@@ -75,29 +84,31 @@ public class LocateFinder extends Finder {
   public Stream<Book> find(final Query query) throws IOException {
     final Stream<Path> stream = db.stream();
     Stream<Path> matched = stream.filter(query::matches);
-    List<String[]> source = query.getReplaces();
-    if (source != null && !source.isEmpty()) {
-
-      final List<String[]> replaces;
-      replaces = replaceSourcePathName(source);
-
-      matched = matched.map(path -> {
-        String fileName = path.toString();
-        boolean replaced = false;
-        for (String[] replace : replaces) {
-          if (fileName.startsWith(replace[0])) {
-            fileName = replace[1] + fileName.substring(replace[0].length());
-            replaced = true;
+    if (checkExistance) {
+      List<String[]> source = query.getReplaces();
+      if (source != null && !source.isEmpty()) {
+  
+        final List<String[]> replaces;
+        replaces = replaceSourcePathName(source);
+  
+        matched = matched.map(path -> {
+          String fileName = path.toString();
+          boolean replaced = false;
+          for (String[] replace : replaces) {
+            if (fileName.startsWith(replace[0])) {
+              fileName = replace[1] + fileName.substring(replace[0].length());
+              replaced = true;
+            }
           }
-        }
-        if (replaced) {
-          path = Path.of(fileName);
-        }
-        return path;
-      });
-    }
-    if (query.isExists()) {
-      matched = matched.filter(path -> exists(path));
+          if (replaced) {
+            path = Path.of(fileName);
+          }
+          return path;
+        });
+      }
+      if (query.isExists()) {
+        matched = matched.filter(path -> exists(path));
+      }
     }
     return matched.map(BookFile::new);
   }

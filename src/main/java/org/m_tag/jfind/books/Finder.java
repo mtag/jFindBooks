@@ -1,6 +1,8 @@
 package org.m_tag.jfind.books;
 
 import jakarta.json.JsonObject;
+import jakarta.json.JsonValue;
+import jakarta.json.JsonValue.ValueType;
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
@@ -19,6 +21,36 @@ public abstract class Finder {
     return id;
   }
   
+  /**
+   * get boolean value from JsonObject.
+   *
+   * @param id id of the Finder
+   * @param object json Object for the finder
+   * @param fieldName field name to get value
+   * @param defaultValue default Value if not exists.
+   * @return specified value in json object (or default).
+   */
+  protected static boolean getBooleanValue(
+      final String id, final JsonObject object, final String fieldName, boolean defaultValue) {
+    boolean booleanValue;
+    if (!object.containsKey(fieldName)) {
+      booleanValue = true;
+    } else {
+      final JsonValue value = object.get(fieldName);
+      if (value.getValueType() == ValueType.TRUE) {
+        booleanValue = true;
+      } else if (value.getValueType() == ValueType.FALSE) {
+        booleanValue = false;
+      } else {
+        throw new IllegalArgumentException(
+            String.format(
+                "finder id=%s has illegal value for checkExistance:%s",
+                id, value.toString()));
+      }
+    }
+    return booleanValue;
+  }
+
   private String id;
   private String type;
 
@@ -32,7 +64,7 @@ public abstract class Finder {
   /**
    * constructor.
    */
-  protected Finder(final String type, final String id) {
+  protected Finder(final String type, final String id) throws IllegalArgumentException {
     super();
     this.type = type;
     this.id = id;
