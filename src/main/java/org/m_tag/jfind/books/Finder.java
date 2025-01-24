@@ -34,7 +34,7 @@ public abstract class Finder {
       final String id, final JsonObject object, final String fieldName, boolean defaultValue) {
     boolean booleanValue;
     if (!object.containsKey(fieldName)) {
-      booleanValue = true;
+      booleanValue = defaultValue;
     } else {
       final JsonValue value = object.get(fieldName);
       if (value.getValueType() == ValueType.TRUE) {
