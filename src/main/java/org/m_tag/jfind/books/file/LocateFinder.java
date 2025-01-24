@@ -92,18 +92,7 @@ public class LocateFinder extends Finder {
         replaces = replaceSourcePathName(source);
   
         matched = matched.map(path -> {
-          String fileName = path.toString();
-          boolean replaced = false;
-          for (String[] replace : replaces) {
-            if (fileName.startsWith(replace[0])) {
-              fileName = replace[1] + fileName.substring(replace[0].length());
-              replaced = true;
-            }
-          }
-          if (replaced) {
-            path = Path.of(fileName);
-          }
-          return path;
+          return replacePath(path, replaces);
         });
       }
       if (query.isExists()) {
@@ -111,6 +100,21 @@ public class LocateFinder extends Finder {
       }
     }
     return matched.map(BookFile::new);
+  }
+
+  private Path replacePath(Path path, final List<String[]> replaces) {
+    String fileName = path.toString();
+    boolean replaced = false;
+    for (String[] replace : replaces) {
+      if (fileName.startsWith(replace[0])) {
+        fileName = replace[1] + fileName.substring(replace[0].length());
+        replaced = true;
+      }
+    }
+    if (replaced) {
+      path = Path.of(fileName);
+    }
+    return path;
   }
 
   /**
