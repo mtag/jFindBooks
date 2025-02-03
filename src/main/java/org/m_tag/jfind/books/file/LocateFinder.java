@@ -142,6 +142,9 @@ public class LocateFinder extends Finder {
   protected void toString(StringBuilder builder) {
     builder.append(",\"file\":\"");
     escape(builder, db.getPath().toString());
-    builder.append('\"');
+    builder.append("\",\"");
+    builder.append(CHECK_EXISTANCE);
+    builder.append("\": ");
+    builder.append(checkExistance);
   }
 }
