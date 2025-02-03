@@ -26,7 +26,7 @@ public class BookFile extends Book {
    */
   public BookFile(final Path path) {
     super(getSize(path));
-    logger.info("found book:{}", path);
+    logger.debug("found book:{}", path);
     this.path = path;
 
     this.setLocation(path.toString());

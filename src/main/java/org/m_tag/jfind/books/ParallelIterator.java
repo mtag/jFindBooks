@@ -52,17 +52,17 @@ public class ParallelIterator implements Iterator<Book> {
       threads.add(service.submit(() -> {
         try (Stream<Book> founds = finder.find(query)) {
           founds.forEach(book -> {
-            logger.info("found book:{}",  book);
+            logger.debug("found book:{}",  book);
             synchronized (queue) {
               final String location = book.getLocation();
               if (queue.containsKey(location)) {
-                logger.info("already queued:{}:{}", location, book);
+                logger.debug("already queued:{}:{}", location, book);
               } else {
-                logger.info("queueing book:{}:{}", queue.size(), book);
+                logger.debug("queueing book:{}:{}", queue.size(), book);
                 queue.put(location, book);
                 if ((maxCount != ParallelFinder.NO_LIMIT && queue.size() >= maxCount)
                     || System.currentTimeMillis() > last) {
-                  logger.info("Cutting iteration due to count over the limit :{}", maxCount);
+                  logger.debug("Cutting iteration due to count over the limit :{}", maxCount);
                   this.service.shutdownNow();
                 }
               }

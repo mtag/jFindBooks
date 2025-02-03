@@ -169,26 +169,26 @@ public class Query {
     return true;
   }
   
-  public void setMaxCount(int maxCount) {
+  public void setMaxCount(final int maxCount) {
     this.maxCount = maxCount;
   }
 
-  public void setGenre(String genre) {
+  public void setGenre(final String genre) {
     this.genre = genre;
     updatePattern();
   }
 
-  public void setAuthor(String author) {
+  public void setAuthor(final String author) {
     this.author = author;
     updatePattern();
   }
 
-  public void setCaseSensitive(boolean caseSensitive) {
+  public void setCaseSensitive(final boolean caseSensitive) {
     this.caseSensitive = caseSensitive;
     updatePattern();
   }
 
-  public void setExists(boolean exists) {
+  public void setExists(final boolean exists) {
     this.exists = exists;
     updatePattern();
   }
