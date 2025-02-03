@@ -5,11 +5,15 @@ import java.nio.file.Path;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.m_tag.jfind.books.Book;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Book as file.
  */
 public class BookFile extends Book {
+  protected static final Logger logger = LoggerFactory.getLogger(BookFile.class);
+  
   private final Path path;
   private static final Pattern pattern = Pattern.compile(
       "^([(（]([^)）]+)[)）] *)*\\[([^\\]]+)\\] *(.*) *([v第]\\d.*)?[.](rar|zip|7z|lzh)$",
@@ -22,11 +26,10 @@ public class BookFile extends Book {
    */
   public BookFile(final Path path) {
     super(getSize(path));
+    logger.info("found book:{}", path);
     this.path = path;
 
-    final Path dir = path.getParent();
-    final String location = dir == null ? null : dir.toString();
-    this.setLocation(location);
+    this.setLocation(path.toString());
 
     final Path nameOnly = path.getFileName();
     String name;
