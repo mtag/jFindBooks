@@ -5,8 +5,8 @@ import java.sql.SQLException;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
-import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -14,6 +14,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.stream.Stream;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Iterator for ParallelFinder.
@@ -21,12 +23,15 @@ import java.util.stream.Stream;
  * @author mtag@m-tag.org
  */
 public class ParallelIterator implements Iterator<Book> {
+  /**
+   * logger.
+   */
+  private static final Logger logger = LoggerFactory.getLogger(ParallelIterator.class);
 
   private static final int WAIT_PERIOD = 100;
   private final long last;
   private final ExecutorService service;
-  private final Deque<Book> queue = new ArrayDeque<>();
-  private final Map<String, Book> founded = new HashMap<>();
+  private final Map<String, Book> queue = new LinkedHashMap<>();
   private final List<Future<?>> threads = new ArrayList<>();
 
   /**
@@ -47,15 +52,19 @@ public class ParallelIterator implements Iterator<Book> {
       threads.add(service.submit(() -> {
         try (Stream<Book> founds = finder.find(query)) {
           founds.forEach(book -> {
-            synchronized (founded) {
+            logger.info("found book:{}",  book);
+            synchronized (queue) {
               final String location = book.getLocation();
-              if (!founded.containsKey(location)) {
-                founded.put(location, book);
-                if ((maxCount != ParallelFinder.NO_LIMIT && founded.size() >= maxCount)
+              if (queue.containsKey(location)) {
+                logger.info("already queued:{}:{}", location, book);
+              } else {
+                logger.info("queueing book:{}:{}", queue.size(), book);
+                queue.put(location, book);
+                if ((maxCount != ParallelFinder.NO_LIMIT && queue.size() >= maxCount)
                     || System.currentTimeMillis() > last) {
+                  logger.info("Cutting iteration due to count over the limit :{}", maxCount);
                   this.service.shutdownNow();
                 }
-                queue.push(book);
               }
             }
           });
@@ -108,11 +117,9 @@ public class ParallelIterator implements Iterator<Book> {
       if (queue.isEmpty()) {
         throw new NoSuchElementException("no element now. Call hasNext() before next()");
       }
-      final Book value;
-      synchronized (this) {
-        value = queue.pop();
-      }
-      return value;
+      Map.Entry<String, Book> entry = queue.entrySet().iterator().next();
+      queue.remove(entry.getKey());
+      return entry.getValue();
     }
   }
 
